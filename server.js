@@ -1,82 +1,65 @@
- require('dotenv').config();
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const Question = require('./models/Question');
-
 const mongoose = require('mongoose');
 
 const authRoutes = require('./routes/auth');
-const quizRoutes = require('./routes/quiz'); // Assuming you already have this for quiz questions
+const quizRoutes = require('./routes/quiz');
+const questionRoutes = require('./routes/questions');
 
 const app = express();
 
-app.use(cors());
-app.use(express.json()); // For parsing JSON bodies
+// Middleware
+const allowedOrigins = [
+  'http://127.0.0.1:5501',      // local dev
+  'https://quiz4u.onrender.com' // deployed frontend
+];
 
-//Create an API route to add quiz questions
-app.post('/api/questions', async (req, res) => {
-  try {
-    const { question, options, answer } = req.body;
-
-    // Basic validation
-    if (!question || !options || !answer) {
-      return res.status(400).json({ message: 'Please provide question, options, and answer.' });
+app.use(cors({
+  origin: function(origin, callback) {
+    // allow requests with no origin (like Postman)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) === -1) {
+      const msg = `The CORS policy for this site does not allow access from the specified Origin.`;
+      return callback(new Error(msg), false);
     }
-    if (!Array.isArray(options) || options.length < 2) {
-      return res.status(400).json({ message: 'Options must be an array with at least 2 items.' });
-    }
-    if (!options.includes(answer)) {
-      return res.status(400).json({ message: 'Answer must be one of the options.' });
-    }
+    return callback(null, true);
+  },
+  methods: ['GET', 'POST', 'DELETE', 'OPTIONS'],
+  credentials: true
+}));
 
-    const newQuestion = new Question({ question, options, answer });
-    await newQuestion.save();
+app.use(express.json()); // Parse JSON bodies
 
-    res.status(201).json({ message: 'Question added successfully', question: newQuestion });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
-
-// DELETE a question by ID
-app.delete('/api/questions/:id', async (req, res) => {
-  const { id } = req.params;
-
-  try {
-    const deleted = await Question.findByIdAndDelete(id);
-
-    if (!deleted) {
-      return res.status(404).json({ message: 'Question not found' });
-    }
-
-    res.json({ message: 'Question deleted successfully' });
-  } catch (error) {
-    console.error('Error deleting question:', error.message);
-    res.status(500).json({ message: 'Server error while deleting question' });
-  }
-});
-
-// GET all quiz questions
-app.get('/api/questions', async (req, res) => {
-  try {
-    const questions = await Question.find();
-    res.json(questions);
-  } catch (error) {
-    console.error('Error fetching questions:', error.message);
-    res.status(500).json({ message: 'Failed to fetch questions' });
-  }
-});
-
-mongoose.connect('mongodb+srv://quizNEWadmin:Ad4LBjOWtOfNNLqH@masterquiz.i2fje.mongodb.net/quizdb?retryWrites=true&w=majority')
+// Database connection
+mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('✅ Connected to MongoDB Atlas'))
-  .catch(console.error);
+  .catch(err => console.error('❌ MongoDB connection error:', err));
 
-
+// Mount routers
 app.use('/api/auth', authRoutes);
 app.use('/api/quiz', quizRoutes);
+app.use('/api/questions', questionRoutes);
 
-const PORT = 3000;
+// Helper function to print all routes of a router
+function printRoutes(prefix, router) {
+  if (!router.stack) return;
+  router.stack.forEach(layer => {
+    if (layer.route && layer.route.path) {
+      const methods = Object.keys(layer.route.methods).join(', ').toUpperCase();
+      console.log(`${methods} -> ${prefix}${layer.route.path}`);
+    }
+  });
+}
+
+// Print all routes
+console.log('Registered routes:');
+printRoutes('/api/auth', authRoutes);
+printRoutes('/api/quiz', quizRoutes);
+printRoutes('/api/questions', questionRoutes);
+
+// Start server
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
