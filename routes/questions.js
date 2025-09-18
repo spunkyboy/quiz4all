@@ -9,13 +9,19 @@ router.post('/', async (req, res) => {
   
       // Basic validation
       if (!question || !options || !answer) {
-        return res.status(400).json({ message: 'Please provide question, options, and answer.' });
+        return res.status(400).json({ 
+            message: 'Please provide question, options, and answer.' 
+          });
       }
       if (!Array.isArray(options) || options.length < 2) {
-        return res.status(400).json({ message: 'Options must be an array with at least 2 items.' });
+        return res.status(400).json({ 
+          message: 'Options must be an array with at least 2 items.' 
+        });
       }
       if (!options.includes(answer)) {
-        return res.status(400).json({ message: 'Answer must be one of the options.' });
+        return res.status(400).json({ 
+          message: 'Answer must be one of the options.' 
+        });
       }
   
       const newQuestion = new Question({ question, options, answer });
