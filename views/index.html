@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Take interactive quizzes after signing in or signing up. Track your results">
+      <title>Quiz</title>
+    <!-- <link rel="icon" type="image/x-icon" href=""> -->
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap" rel="stylesheet">
+  </head>
+  
+<body class="body-content">
+  <main>
+   <!-- Sign In Page -->
+    <section>
+        <div id="signin-heading" class="page active">
+          <h1>Quiz</h1>
+          <h2>Sign In</h2>
+          <form id="signin-form"  aria-describedby="sign-in"  class="sign-in">
+              <input type="text" id="signin-username" placeholder="Username" aria-describedby="signin-username" required>
+              <input type="password" id="signin-password" placeholder="Password" aria-describedby="signin-password" required>
+              <input type="checkbox" id="signIn-password-if"> 
+              <label for="signIn-password-if">Show Password </label>
+              <p>
+                <a href="/forgot-password">Forgot Password?</a>
+              </p>
+               <!--text info when too many attempted failed-->
+              <button type="submit" id="sign-in">Sign In</button>
+              <div>
+                <p class="center-flex">Don't have an account?</p>
+                <button type="button" id="show-Signup">Sign Up</button>
+              </div>
+          </form>
+        </div>
+    </section>
+<!-- Sign Up Page -->
+<section>
+    <div id="signup-heading" class="page">
+        <h2>Sign Up</h2>
+        <form id="signup-form" aria-labelledby="sign-up" class="sign-up-form">
+            <input type="text" id="signup-username" placeholder="Username" aria-describedby="signup-username" required>
+            <input type="password" id="signup-password" placeholder="Password" aria-describedby="signup-password" required>
+      <!-- Show password toggle -->
+          <input type="checkbox" id="password-if">
+          <label for="signIn-password-if"> Show Password</label>
+            <button type="submit" aria-label="Submit your sign-up form" id="sign-up">Sign Up</button>
+            <!--sign up notify message-->
+            <div id="signupPromptMsg"></div>
+            <div>
+              <p>Already have an account?</p>
+              <button type="button" id="signIn-btn" aria-label="Go to sign in page">Sign In</button>
+            </div>
+        </form>
+    </div>
+</section>
+<!-- Quiz Page -->
+<section>
+    <div id="quiz-page" class="page" role="region" aria-labelledby="quiz-page">
+      <div class="logoutGreesting">
+        <button id="user-logout">Logout</button> 
+        <h2 id="greet-message" class="greetings">Greetings</h2>
+      </div>
+      <div id="quiz-progress" class="quiz-progress" aria-live="polite"></div>
+        <div id="question-container" >
+
+        </div>
+        <div class="prevs_next-btn">
+          <button id="prev-btn"  aria-label="Go to the previous question" disabled>Previous</button>
+          <button id="next-btn" aria-label="Go to the next question" disabled>Next</button>
+          <button id="submit-btn" aria-label="Submit your quiz answers" disabled>Submit</button>
+        </div>
+    </div>
+</section>
+<!-- Result Page background color, text color in the javascript showresultpage function -->
+ <section>
+    <div id="result-page" class="page resultPage" role="status" aria-live="assertive">
+      <h2>Quiz Results</h2>
+      <p id="result"></p>
+      <button id="retry-btn" aria-label="Retry the quiz">Try Again</button> 
+      <button id="user-logout-result">Logout</button>
+    </div>
+  </section>
+  <section>
+  <!-- Username Modal -->
+  <div id="username-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="username-title">
+    <div class="modal-content">
+      <h3 id="username-title">Passed Save your result</h3>
+  
+      <label for="username-input">Name or Email</label>
+      <input
+        type="text"
+        id="username-input"
+        autocomplete="name"
+        placeholder="Enter your name or email"
+      >
+      <div class="modal-actions">
+        <button id="save-result-btn">Save</button>
+        <button id="cancel-result-btn">Cancel</button>
+      </div>
+    </div>
+  </div>  
+  </section>
+  <!--too many attempt, wrong password or emaol modal-->
+  <section>
+    <div id="signin-error-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="error-title">
+      <div class="modal-content">
+        <h3 id="error-title">Login Error</h3>
+        <p id="error-message"></p>
+        <div class="modal-actions">
+          <button id="close-error-btn">Close</button>
+        </div>
+      </div>
+    </div>    
+  </section>
+  <!--modal for quiz error fetch data-->
+  <section>
+    <div id="quiz-error-modal" class="modal hidden">
+      <div class="modal-content">
+        <p id="quiz-error-message"></p>
+        <button id="close-quiz-error-btn">Close</button>
+      </div>
+    </div>    
+  </section>
+</main>
+
+<!-- Then your script -->
+<script src="https://unpkg.com/dompurify@3.0.6/dist/purify.min.js"></script>
+ <script src="/mainScript.js"></script>
+</body>
+</html>

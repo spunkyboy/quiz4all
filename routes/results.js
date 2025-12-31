@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Result = require('../models/Result');
 
+
 //utility validate request ddata
 function validationsResutl({username, score, total}){
  if(!username || score == null || total == null){
@@ -12,9 +13,9 @@ function validationsResutl({username, score, total}){
 
 // Controller Logic - Save user result
 router.post('/', async (req, res) => {
-  const { username, score, total, timeSpent } = req.body;
+  const { username, score, total, timeSpent, isPassed } = req.body;
 
-  const validateError = validationsResutl({username, score, total});
+  const validateError = validationsResutl({username, score, total, isPassed});
     if(validateError){
       return res.status(400).json({ 
         message: validateError 
@@ -22,7 +23,7 @@ router.post('/', async (req, res) => {
     }
 
   try {
-    //Business Logic
+    // Logic
     const isPassed = ( score /  total) >= 0.6;
     // Database operation
     const newResult = new Result({ username, score, total, timeSpent, isPassed });
@@ -47,10 +48,11 @@ router.get('/', async (req, res) => {
     });
 
   } catch (err) {
-    console.error('[GET /api/results] Error:', err);
+    // console.error('[GET /api/results] Error:', err);
     res.status(500).json({ success: false, message: 'Internal Server Error' });
   }
 });
+
 
 
 module.exports = router;

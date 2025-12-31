@@ -4,24 +4,34 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "start": "node server.js",
+    "sass": "sass --watch public/scss:public/css",
+    "dev": "concurrently \"npm run sass\" \"npm start\""
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^6.0.0",
-    "bcryptjs": "^3.0.2",
+    "bcryptjs": "^3.0.3",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^17.2.1",
     "express": "^5.1.0",
     "express-rate-limit": "^8.1.0",
+    "express-session": "^1.18.2",
+    "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.17.0"
+    "mongoose": "^8.17.0",
+    "nodemailer": "^7.0.11",
+    "sweetalert2": "^11.26.3",
+    "validator": "^13.15.23"
   },
   "devDependencies": {
+    "concurrently": "^9.2.1",
     "jest": "^30.1.3",
+    "sass": "^1.94.0",
     "supertest": "^7.1.4"
   },
   "jest": {

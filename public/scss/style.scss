@@ -1,0 +1,949 @@
+html, body{
+  font-size: 16px;
+}
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+a {
+  text-decoration: none;
+  color:#e0ffff;
+}
+// Forgot-password and reset highlight text feedback
+#message {
+  text-align: center;
+  margin-top: 1.2rem;
+  font-family: "Noto Sans", serif;
+  color:#e7903c;
+}
+
+.page {
+  display: none;
+  .logoutGreesting{
+      display: flex;          
+      align-items: center;    
+      gap: 2rem;   
+      
+      button {
+         flex: 0 0 auto;         /* do not grow, width auto */
+         padding: 1rem;   /* adjust height/width */
+         max-width: 18.75rem;        /*  minimum button width */
+      }
+
+      h2 {
+        flex: 1;                /* take remaining space */
+        margin: 0;              /* remove default h2 margin */
+        font-size: 1.5rem;      /* optional: adjust font size */
+
+      }
+  }
+  #greet-message {
+    order: 1;
+  }
+
+  #user-logout {
+    order: 2;
+  }
+  .prevs_next-btn{
+    display: flex;
+    align-items: center;
+
+    button{
+        margin: 0rem 1rem;
+    }
+  }
+}
+
+.page.active {
+  display: grid;
+  width: 100vw;
+  max-width: 75rem;
+  margin: 0 auto;
+  padding: 3rem;
+  gap: 3rem;
+  box-sizing: border-box;
+  // text-align: center;
+  
+  h1{
+    font-family: "Noto Sans", serif;
+    text-align: center;
+    font-size: 3rem;
+    font-weight: 700;
+    color:#e0ffff;
+    margin-bottom: 2rem;
+  }
+
+  h2{
+    font-family: "Noto Sans", serif;
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color:#e0ffff;
+  }
+
+  .greetings{
+    font-family: "Noto Sans", serif;
+    text-align: center;
+    font-size: 1.3rem;
+    margin: 2rem 0rem;
+    padding: 0.5rem;
+    font-weight: 400;
+    line-height: 1.5;
+    border-right: 0.12rem solid #e0ffff;
+    border-left: 0.12rem solid #e0ffff;
+    border-bottom: 0.12rem solid #e0ffff;
+  }
+  .prevs_next-btn{
+    display: flex;
+
+    button{
+      width: 100%;
+      margin: 1rem 0rem;
+  }
+  }
+  p {
+    a {
+      text-decoration: underline;
+    }
+  }
+}
+
+.quiz-progress {
+  text-align: center;
+  font-weight: bold;
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+  color:#00ff00;
+}
+
+button {
+  width: fit-content;
+  padding: 1rem 7rem;
+  justify-self: center;
+  margin-top: 1rem;
+  font-size: 1.2rem;
+  background-color: #e6cc22;
+  color: #1c2833;
+  border: none;
+  cursor: pointer;
+
+  &:hover{
+    background-color: #000;
+    color:#279fe2;
+  }
+}
+
+button:disabled {
+  background-color:#ddd;
+}
+
+input {
+  width: 100%;
+  padding: 0.625rem;
+  margin-top: 0.625rem;
+  border: 0.063rem solid #ddd;
+  border-radius: 0.25rem;
+}
+// This class can be found in the mainScript.js
+.quiz-class{
+  display: grid;
+  justify-content: center;
+  font-family: "Noto Sans", serif;
+  line-height: 2;
+  font-size: 1.5rem;
+  color:#e0ffff;
+
+  p:nth-child(1){
+    line-height: 1.3;
+  }
+
+  input[type="radio"] {
+    width: 1.2rem; 
+    height: 1.2rem; 
+    cursor: pointer;
+}  
+.notify-feedback{
+  margin: 30px 0;
+  text-align: center;
+  font-weight: bold;
+  color: rgb(226, 226, 19);
+  } 
+  .quiz-question {
+    text-align: center;
+  }
+}
+// Result text-align center
+.resultPage {
+  text-align: center;
+}
+// For users
+.sign-in, .sign-up-form {
+  display: grid;
+  gap: 1.2rem;
+  text-align: center;
+
+  p{
+    font-size: 1.3rem;
+    margin: 1.2rem 0rem;
+    color:#e0ffff;
+
+  }
+  label{
+    font-size: 1.3rem;
+    margin: 1.2rem 0rem;
+    color:#e0ffff;
+  }
+}
+// Admin page style for mobile 
+.admin-content {
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  background-color: #1c2833;
+  font-family: "Noto Sans", serif;
+  padding: 2rem 0rem;
+  color:#e0ffff;
+  min-height: calc(var(--vh, 1vh) * 100); 
+
+  .adminLogoutBtn{
+    font-weight: 600;
+  }
+  p{
+    text-align: center;
+    font-size: 1.4rem;
+    margin-bottom: 1.2rem;
+  }
+
+  h1{
+   align-self: flex-end;
+   text-align: center;
+   margin: 0 auto;           /* horizontal centering */
+   font-weight: 800;
+   font-size: 1.7rem;
+   margin: 2rem 0rem;
+  }
+  label{
+      display: block;        
+      font-size: 1rem;
+      text-align: center;     /* Center the label text */
+      margin: 1rem ;
+  }
+
+  #quizForm {
+    button {
+      padding: 0.6rem 0rem;
+      color: #1c2833;
+      font-size: 1rem;
+      font-weight: 500;
+      border: none;
+      border-radius: 0.3rem;
+      cursor: pointer;
+
+      display: block;       /* Make button take full width of its content */
+      margin: 0 auto;       /* Auto left and right margins center it */
+      width: 15rem;
+  }
+  p{
+    color: rgb(234, 244, 247);
+    text-align: center;
+    margin-bottom: 1.2rem;
+  }
+  }
+  #quizForm input[type="text"]:focus {
+    width: 100%;
+    font-size: clamp(1rem, 2.5vw, 1.2rem);
+    padding: 0.5rem;
+    margin: 1rem 0rem;
+    outline: none;
+    border-radius: 0.3rem;
+    box-sizing: border-box;
+    text-align: center;
+  }
+  .admin-sign-page {
+    display: grid;
+  }
+}
+// Mobile style for admin signin and sign up
+.admin-container{
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  background-color: #1c2833;
+  font-family: "Noto Sans", serif;
+  text-align: center;
+  padding: 2rem 0rem;
+  color:#e0ffff;
+  min-height: calc(var(--vh, 1vh) * 100); 
+
+  h1 {
+    font-size: 2rem;
+    font-weight: 600;
+  }
+ input {
+  margin: 1.3rem 0rem;
+ }
+  button:hover {
+    background-color: #279fe2;
+    color: white;
+  }
+  .toggle-btn {
+    background: none;
+    border: none;
+    color: #e6cc22;
+    cursor: pointer;
+    margin-top: 1rem;
+    text-decoration: underline;
+  }
+  .message {
+    margin-top: 1rem;
+    font-weight: bold;
+  }
+  .admin-sign-page {
+    display: grid;
+  }
+} 
+
+.body-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #1c2833;
+  min-height: calc(var(--vh, 1vh) * 100); 
+}
+
+//loader spin for sign in Users / Admin
+#loading-spinner {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1.2rem;
+  background: #f3f3f3;
+  padding: 1rem 2rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 0.125rem 0.625rem rgba(0, 0, 0, 0.2);
+
+  p{
+    color:#1c2833;
+  }
+}
+.spinner-roll {
+  border: 0.25rem solid #cacaca;
+  border-top: 0.25rem solid #1c2833;
+  border-radius: 50%;
+  width: 1.875rem;
+  height: 1.875rem;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 0.625rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+//reset-password styel for desktop for users
+.reset-password-form {
+  display: grid;
+  width: fit-content;
+  gap: 2rem;
+  h2 {
+    font-family: "Noto Sans", serif;
+    font-size: 3rem;
+    color:#e0ffff;
+  }
+  .show-password-reset{
+    display: flex;
+    align-items: center;
+    color:#e0ffff;
+    line-height: 1.5;
+  }
+  button {
+    width: fit-content;
+    padding: 1rem 6rem;
+    justify-self: center;
+  }
+}
+// Forgot password style
+.forgot-password {
+  display: flex;
+  flex-direction: column;   /* input on top, button below */
+  align-items: center;      /* center horizontally */
+  gap: 1rem; 
+  
+  .forgot-password input {
+    width: 100%;
+    max-width: 18.5rem;
+  }
+  
+  .forgot-password button {
+    margin-top: 0.5rem;
+  }
+h1 {
+  font-size: 1.5rem;
+  color:#e0ffff;
+}
+}
+// Modal for users to save result and sign in and sign up
+.modal {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 9999;
+
+  &.hidden {
+    display: none;
+  }
+
+  .modal-content {
+    background: #fff;
+    padding: 1.5rem;
+    width: 90%;
+    max-width: 25rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.2);
+    text-align: center;
+
+    h3 {
+      font-family: "Noto Sans", serif;
+      font-size: 1.1rem;
+      font-weight: 500;
+      line-height: 1.2;
+      color: #0077cc;
+      margin-bottom: 0.8rem;
+    }
+
+    label {
+      display: block;
+      font-size: 0.97rem;
+      color: #333;
+      margin-bottom: 0.5rem;
+      text-align: left;
+    }
+
+    #username-input {
+      width: 100%;
+      padding: 0.5rem;
+      border: 0.3rem solid #ccc;
+      border-radius: 0.25rem;
+      box-sizing: border-box;
+      margin-bottom: 1rem;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: space-around;
+      gap: 0.5rem;
+
+      button {
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 0.25rem;
+        cursor: pointer;
+      }
+
+      #save-result-btn {
+        background-color: #0077cc;
+        color: #fff;
+      }
+
+      #cancel-result-btn {
+        background-color: #ccc;
+        color: #000;
+      }
+    }
+  }
+}
+
+
+//adjustment layout for desktop
+@media (max-width: 1024px) and (orientation: landscape){
+
+  .page {
+    display: none;
+  
+    .logoutGreesting{
+        display: flex;          
+        align-items: center;  
+        justify-content: space-between;  
+        padding: 1rem 1rem; 
+        gap: 2rem;        
+    }
+    #greet-message {
+      order: 1;
+      flex: 0 1 auto;
+    }
+  
+    #user-logout {
+      order: 2;
+    }
+    .prevs_next-btn{
+      display: flex;
+      align-items: center;
+  
+      button{
+          margin: 0rem 1rem;
+      }
+    }
+  }
+  .page.active {
+      width: 100vw;        /*  full viewport */
+      max-width: none;     /*  remove constraint */
+      margin-left: calc(-50vw + 50%);
+      padding: 2rem;
+   
+    h1{
+      font-family: "Noto Sans", serif;
+      text-align: center;
+      font-size: 3rem;
+      font-weight: 700;
+      color:#e0ffff;
+      margin-bottom: 2rem;
+    }
+  
+    h2{
+      font-family: "Noto Sans", serif;
+      text-align: center;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color:#e0ffff;
+    }
+  
+    p{
+      font-family: "Noto Sans", serif;
+      text-align: center;
+      padding: 1rem 0rem;
+      color:#e0ffff;
+      
+      a{
+        font-family: "Noto Sans", serif;
+        color: #e6cc22;
+      }
+    }
+    .greetings{
+      font-family: "Noto Sans", serif;
+      text-align: center;
+      font-size: 1.3rem;
+      margin: 2rem 0rem;
+      padding: 0.5rem;
+      font-weight: 400;
+      line-height: 1.5;
+      border-right: 0.12rem solid #e0ffff;
+      border-left: 0.12rem solid #e0ffff;
+      border-bottom: 0.12rem solid #e0ffff;
+    }
+    
+  }
+  
+  .quiz-progress {
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color:#00ff00;
+  }
+  
+  button {
+    width: fit-content;
+    padding: 1rem 5rem;
+    justify-self: center;
+    margin-top: 1rem;
+    font-size: 1rem;
+    background-color: #e6cc22;
+    color: #1c2833;
+    border: none;
+    cursor: pointer;
+  
+    &:hover{
+      background-color: #000;
+      color:#279fe2;
+    }
+  }
+  
+  button:disabled {
+    background-color:#ddd;
+  }
+  
+  input {
+    width: 100%;
+    padding: 0.625rem;
+    margin-top: 0.625rem;
+    border: 0.063rem solid #ddd;
+    border-radius: 0.25rem;
+  }
+  // .quiz-class{
+  //   display: grid;
+  //   justify-content: center;
+  //   font-family: "Noto Sans", serif;
+  //   font-size: 1rem;
+  //   color:#e0ffff;
+  
+  //   p:nth-child(1){
+  //     line-height: 1.3;
+  //   }
+  
+  //   input[type="radio"] {
+  //     width: 1.2rem; 
+  //     height: 1.2rem; 
+  //     cursor: pointer;
+  // }  
+  // .notify-feedback{
+  //   margin: 1.3rem 0;
+  //   text-align: center;
+  //   font-weight: bold;
+  //   color: yellow;
+  //   } 
+  // }
+  //signin and sign up for users
+  .sign-in, .sign-up-form {
+    display: grid;
+    gap: 1.2rem;
+    text-align: center;
+
+    p{
+      font-size: 1.3rem;
+      margin: 1.2rem 0rem;
+      color:#e0ffff;
+
+    }
+    label{
+      font-size: 1.3rem;
+      margin: 1.2rem 0rem;
+      color:#e0ffff;
+    }
+  }
+  //class from quizScript.js
+  .quiz-class{
+    display: grid;
+    justify-content: center;
+    font-family: "Noto Sans", serif;
+    line-height: 2;
+    font-size: 1.2rem;
+    color:#e0ffff;
+  
+    p:nth-child(1){
+      line-height: 1.3;
+    }
+  
+    input[type="radio"] {
+      width: 1.2rem; 
+      height: 1.2rem; 
+      cursor: pointer;
+  }  
+  .notify-feedback{
+    margin: 1.875rem 0;
+    text-align: center;
+    font-weight: bold;
+    color: rgb(226, 226, 19);
+    } 
+  }
+  
+  //admin page style for mobile 
+  .admin-content{
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    background-color: #1c2833;
+    font-family: "Noto Sans", serif;
+    padding: 2rem 0rem;
+    color:#e0ffff;
+    min-height: calc(var(--vh, 1vh) * 100); 
+  
+    .adminLogoutBtn{
+      font-weight: 600;
+    }
+    p{
+      text-align: center;
+      font-size: 1.4rem;
+      margin-bottom: 1.2rem;
+    }
+  
+    h1{
+     align-self: flex-end;
+     text-align: center;
+     margin: 0 auto;           /* horizontal centering */
+     font-weight: 800;
+     font-size: 1.7rem;
+     margin: 2rem 0rem;
+    }
+    label{
+        display: block;        
+        font-size: 1rem;
+        text-align: center;     /* Center the label text */
+        margin: 1rem ;
+    }
+  
+    #quizForm {
+      button {
+        padding: 0.6rem 0rem;
+        color: #1c2833;
+        font-size: 1rem;
+        font-weight: 500;
+        border: none;
+        border-radius: 0.3rem;
+        cursor: pointer;
+  
+        display: block;       /* Make button take full width of its content */
+        margin: 0 auto;       /* Auto left and right margins center it */
+        width: 15rem;
+    }
+    p{
+      color: rgb(234, 244, 247);
+      text-align: center;
+      margin-bottom: 1.2rem;
+    }
+    }
+    #quizForm input[type="text"] {
+      width: 100%;
+      font-size: 0.7rem;
+      padding: 0.5rem;
+      margin: 1rem 0rem;
+      border: 0.1rem solid #ccc;
+      border-radius: 0.3rem;
+      box-sizing: border-box;
+      text-align: center;
+    }
+  }
+  //mobile style for admin signin and sign up
+  .admin-container{
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    background-color: #1c2833;
+    font-family: "Noto Sans", serif;
+    text-align: center;
+    padding: 2rem 0rem;
+    color:#e0ffff;
+    min-height: calc(var(--vh, 1vh) * 100); 
+  
+    h1 {
+      font-size: 2rem;
+      font-weight: 600;
+    }
+   input {
+    margin: 1.3rem 0rem;
+   }
+    button:hover {
+      background-color: #279fe2;
+      color: white;
+    }
+    .toggle-btn {
+      background: none;
+      border: none;
+      color: #e6cc22;
+      cursor: pointer;
+      margin-top: 1rem;
+      text-decoration: underline;
+    }
+    .message {
+      margin-top: 1rem;
+      font-weight: bold;
+    }
+  } 
+  
+  .body-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #1c2833;
+    min-height: calc(var(--vh, 1vh) * 100); 
+  }
+  //reset-password styles for tablets
+.reset-password-form {
+  display: grid;
+  width: 100vw;
+  gap: 2rem;
+  padding: 3rem;
+  h2 {
+    font-family: "Noto Sans", serif;
+    font-size: 3rem;
+    color:#e0ffff;
+  }
+  .show-password-reset{
+    display: flex;
+    align-items: center;
+    color:#e0ffff;
+    line-height: 1.5;
+  }
+  button {
+    width: fit-content;
+    padding: 1rem 3rem;
+    justify-self: center;
+  }
+}
+}
+
+@media screen and (max-width: 768px) and (orientation: portrait)  {
+ 
+  .page.active {
+        // width: 100vw;
+        // max-width: none;
+        // margin-left: calc(-50vw + 50%);
+        // padding: 1rem;
+       
+    .greetings{
+      font-family: "Noto Sans", serif;
+      text-align: center;
+      margin: 2rem 0rem;
+      padding: 0.5rem;
+      font-weight: 400;
+      line-height: 1.5;
+      border: none;
+    }
+    .page {
+      display: none;    
+    }
+  .logoutGreesting{
+    display: grid;             
+    padding: 1rem 1rem; 
+    gap: 2rem; 
+
+    button {
+      width: 100%;          /* full container width */
+      padding: 1rem;        /* adjust height */
+      margin-bottom: 1rem;  /* space between button and greeting */
+      font-size: 1rem;
+      cursor: pointer;
+   }
+
+    h2 {
+      margin: 0;
+      font-size: 1.5rem;    /* greeting font size */
+      line-height: 1.2;
+    }      
+  }
+    #user-logout {
+      order: 1;
+    }
+    #greet-message {
+      order: 2;
+    }
+    .prevs_next-btn{
+      display: grid;
+
+      button{
+        width: 100%;
+        margin: 1rem 0rem;
+    }
+    }
+//sign in moblie potrait
+    .sign-in, .sign-up-form {
+      display: grid;
+      gap: 1.2rem;
+      text-align: center;
+
+      p{
+        font-size: 1.3rem;
+        margin: 1.2rem 0rem;
+        color:#e0ffff;
+
+      }
+      label{
+        font-size: 1.3rem;
+        margin: 1.2rem 0rem;
+        color:#e0ffff;
+      }
+    }
+  }
+  .admin-content{
+    display: grid;
+    justify-content: center;
+    margin-top: 2rem;
+    gap: 2rem;
+    align-items: center;
+    background-color: #1c2833;
+    font-family: "Noto Sans", serif;
+    color:#e0ffff;
+    min-height: calc(var(--vh, 1vh) * 100); // Replaces height: 100vh
+  
+  }
+  #quizForm {
+    button {
+      padding: 0.6rem 0rem;
+      color: #1c2833;
+      font-size: 1rem;
+      font-weight: 500;
+      border: none;
+      border-radius: 0.3rem;
+      cursor: pointer;
+
+      display: block;       
+      margin: 0 auto;       
+      width: 10rem; 
+  }
+  }
+//reset-password styles
+.reset-password-form {
+  display: grid;
+  width: 100vw;
+  gap: 2rem;
+  padding: 3rem;
+  h2 {
+    font-family: "Noto Sans", serif;
+    font-size: 2rem;
+    color:#e0ffff;
+  }
+  .show-password-reset{
+    display: flex;
+    align-items: center;
+    color:#e0ffff;
+    line-height: 1.5;
+  }
+  button {
+    width: fit-content;
+    padding: 1rem 3rem;
+    justify-self: center;
+  }
+}
+
+}
+
+/* Mobile landscape */
+@media (max-width: 768px) and (orientation: landscape) {
+  //reset-password styles
+  .reset-password-form {
+    color:#e0ffff;
+    h2 {
+      font-family: "Noto Sans", serif;
+      font-size: 2.1rem;
+    }
+    .show-password-reset{
+      display: flex;
+      justify-self:flex-start;
+    }
+    button {
+      width: fit-content;
+      padding: 1rem 3rem;
+      justify-self:flex-start;
+    }
+  }
+ 
+  //sign in moblie potrait
+  .sign-in, .sign-up-form {
+    display: grid;
+    gap: 1.2rem;
+    text-align: center;
+
+    p{
+      font-size: 1.3rem;
+      margin: 1.2rem 0rem;
+      color:#e0ffff;
+
+    }
+    label{
+      font-size: 1.3rem;
+      margin: 1.2rem 0rem;
+      color:#e0ffff;
+    }
+    button {
+      width: fit-content;
+      padding: 1rem 5rem;
+      justify-self: center;
+      
+    }
+    
+  }
+
+}

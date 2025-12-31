@@ -1,11 +1,9 @@
 require('dotenv').config({ path: '.env.test' });
 const request = require('supertest');
 const mongoose = require('mongoose');
-const bcrypt = require('bcrypt'); // ✅ Import bcrypt here
+const bcrypt = require('bcrypt'); // Import bcrypt here
 const app = require('./app'); 
 const User = require('./models/User'); 
-
-
 
 jest.mock('bcrypt');
 
@@ -43,7 +41,7 @@ describe('Auth API', () => {
         .send(testUser); // same username again
   
       expect(res.statusCode).toBe(400);
-      expect(res.body.message).toMatch(/already exists/i); // ✅ Correct expectation
+      expect(res.body.message).toMatch(/already exists/i); //Correct expectation
     });
   
     it('should return 400 if email or password is missing', async () => {
@@ -85,6 +83,7 @@ describe('Auth API', () => {
       expect(res.statusCode).toBe(400);
       expect(res.body.message).toBe('Invalid email format');
     });
+
     
  it('should reject weak password', async () => {
       const res = await request(app)

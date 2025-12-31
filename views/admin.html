@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Quiz Admin - Add Question</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/reset.css">
+</head>
+<body class="admin-content">
+  <main class="admin-sign-page">
+  <!--fetching admin user email from authenication-->
+  <p>Logged in as: <span id="email-admin"></span></p>
+
+  <button class="adminLogoutBtn" id="logoutBtnAdmin">Logout</button>
+  <h1>Add Quiz Question</h1>
+
+  <form id="quizForm">
+    <label>
+      Question:<br>
+      <input type="text" id="question" required>
+    </label>
+    <br><br>
+    <label>
+      Options (comma separated):<br>
+      <input type="text" id="options" required placeholder="Option1, Option2, Option3, Option4">
+    </label>
+    <br><br>
+    <label>
+      Correct Answer:<br>
+      <input type="text" id="answer" required>
+    </label>
+    <br><br>
+    <!--count up and down qquestions add and delete-->
+    <p>10 Questions Max.</p>
+    <p id="quizCount"></p>
+    <p id="limitWarning" style="color:rgb(239, 6, 6); display:none;">
+      Quiz limit reached. Delete a quiz to add a new one.
+    </p>
+    <button type="submit">Add Question</button>
+  </form>
+<!--Btn for load question and results-->
+  <button id="loadQuestionsBtn">Load All Questions</button>
+  <div id="questionsContainer"></div>
+  <button id="loadResultsBtn">Load User Results</button>
+  <div id="resultsContainer"></div>
+  <div>
+    <p id="resultMsg"></p>
+    <p id="questAdd"></p>
+  </div>
+</main>
+<!-- Only protect your own dynamic HTML -->
+<script>
+if (window.trustedTypes && !window.trustedTypes.swalPolicy) {
+  window.trustedTypes.createPolicy('default', {
+    createHTML: string => string, // allow SweetAlert2 to assign HTML
+    createScriptURL: url => url
+  });
+}
+ // Navigate to activities dashboard
+ document.getElementById('viewActivitiesBtn')?.addEventListener('click', function() {
+    window.location.href = '/admin/activities';
+  });
+</script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+<script src="https://unpkg.com/dompurify@3.0.6/dist/purify.min.js"></script>
+<script src="https://kit.fontawesome.com/5d07f027c2.js"></script>
+<script src="/adminScript.js"></script>
+</body>
+</html>
