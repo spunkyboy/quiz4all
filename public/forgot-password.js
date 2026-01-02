@@ -32,7 +32,7 @@ form.addEventListener('submit', async (e) => {
   const email = formData.get('email');
 
   try {
-    const resPromised = fetch('http://localhost:5001/api/auth/forgot-password', {
+    const resPromised = fetch('/api/auth/forgot-password', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email })

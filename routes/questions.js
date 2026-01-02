@@ -69,7 +69,7 @@ router.delete('/:id', authenToken, isAdminProtected, async (req, res) => {
 
 // GET all questions (admin only)
 router.get('/', authenToken, isAdminProtected, async (req, res) => {
-  console.log('ADMIN ACCESS GRANTED:', req.user);
+  // console.log('ADMIN ACCESS GRANTED:', req.user);
 
   try {
     const questions = await Question.find(); // includes answers

@@ -23,49 +23,55 @@
     adminForm.reset(); // Clear password and email inputs
   });
 
+
   // Handle form submit
-  adminForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
+adminForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
 
-    const email = document.getElementById('email').value.trim();
-    const password = document.getElementById('password').value.trim();
-    
-    const endpoint = isSignIn 
-      ? 'http://localhost:5001/api/auth/admin/signin' 
-      : 'http://localhost:5001/api/auth/admin/signup';
-    try {
-      const res = await fetch(endpoint, {
-        method: 'POST',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value.trim();
 
-      const data = await res.json();
+  // Use relative URLs (works locally + in production)
+  const endpoint = isSignIn
+    ? '/api/auth/admin/signin'
+    : '/api/auth/admin/signup';
 
-      if (res.ok) {
-        message.style.color = '#30E877';
-        message.textContent = data.message || 'Please wait';
-        //clear forms 
-        document.getElementById('authForm').reset();
+  try {
+    message.style.color = '#e6a522';
+    message.textContent = 'Processing...';
 
-        if (isSignIn) {
-          setTimeout(() => {
-            window.location.href = '/admin'; 
-             }, 1200);
-        }
-      } else {
-        message.style.color = '#e6a522';
-        message.textContent = data.message || 'Something went wrong';
-      }
-    } catch (error) {
-      message.style.color = 'red';
-      message.textContent = 'Error: ' + error.message;
+    const res = await fetch(endpoint, {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.message || 'Authentication failed');
     }
-  });
-  
 
-  // For mobile scroll for all portrait content to show  and landscape all content to show-->
+    //  Success
+    message.style.color = '#30E877';
+    message.textContent = data.message || 'Success';
+
+    document.getElementById('authForm').reset();
+
+    //  Redirect immediately after successful sign-in
+    if (isSignIn) {
+      window.location.href = '/admin';
+    }
+
+  } catch (error) {
+    message.style.color = 'red';
+    message.textContent = error.message || 'Server error';
+  }
+});
+
+  
+ // For mobile scroll for all portrait content to show  and landscape all content to show-->
   function setViewportHeight() {
     const veiwHeight = window.innerHeight * 0.01;
     document.documentElement.style.setProperty('--vh', `${veiwHeight}px`);

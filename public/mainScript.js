@@ -50,7 +50,7 @@ closeQuizErrorBtn.addEventListener('click', () => {
 async function fetchQuizDataAndStart() {
   try {
     // throw new Error('Simulated network error');
-    const res = await fetch('http://localhost:5001/api/quiz', {
+    const res = await fetch('/api/quiz', {
       method: 'GET',
       credentials: 'include'
     });
@@ -211,7 +211,7 @@ async function showResultPage() {
 
   let resultData;
   try {
-    const res = await fetch('http://localhost:5001/api/quiz/submit', {
+    const res = await fetch('/api/quiz/submit', {
       method: 'POST',
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
@@ -267,7 +267,7 @@ async function showResultPage() {
   if (!username) return;
 
   try {
-    await fetch('http://localhost:5001/api/quiz/results', {
+    await fetch('/api/quiz/results', {
       method: 'POST',
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
@@ -303,7 +303,7 @@ document.getElementById('signin-form').addEventListener('submit', async function
   const password = document.getElementById('signin-password').value.trim();
 
   try {
-    const response = await fetch('http://localhost:5001/api/auth/signin', {
+    const response = await fetch('/api/auth/signin', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
@@ -313,24 +313,26 @@ document.getElementById('signin-form').addEventListener('submit', async function
     const data = await response.json();
 
     if (response.ok) {
-      // Show loading spinner
       const loadingEntry = document.createElement('div');
       loadingEntry.id = 'loading-spinner';
-
-      const cleanedLoading = DOMPurify.sanitize(`
+    
+      loadingEntry.innerHTML = DOMPurify.sanitize(`
         <div class='spinner-roll'></div>
         <p>Loading your quiz...</p>
-      `, { RETURN_TRUSTED_TYPE: true });
-
-      loadingEntry.innerHTML = cleanedLoading;
+      `);
+    
       document.body.appendChild(loadingEntry);
-
-      setTimeout(() => {
+    
+      try {
+        await Promise.all([
+          fetchQuizDataAndStart(),
+          loadUser()
+        ]);
+      } finally {
         loadingEntry.remove();
-        fetchQuizDataAndStart();
-        loadUser();
-      }, 1200);
-    } else {
+      }
+    }
+     else {
       // Show modal with error message
       errorMessage.textContent = data.message || 'Login failed';
       errorModal.classList.remove('hidden');
@@ -344,7 +346,7 @@ document.getElementById('signin-form').addEventListener('submit', async function
 
 async function loadUser() {
   try {
-    const res = await fetch('http://localhost:5001/api/quiz/users', {
+    const res = await fetch('/api/quiz/users', {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' },
 
@@ -394,7 +396,7 @@ document.getElementById('signup-form').addEventListener('submit', async function
     return;
   }
     try {
-      const response = await fetch('http://localhost:5001/api/auth/signup', {
+      const response = await fetch('/api/auth/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })
@@ -482,7 +484,7 @@ function resetTimer() {
 }
 
 function logoutUser() {
-  fetch('http://localhost:5001/api/auth/logout', {
+  fetch('/api/auth/logout', {
     method: 'POST',
     credentials: 'include' // important for sending cookies
   })

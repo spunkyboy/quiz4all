@@ -25,7 +25,7 @@ function logoutAdmin() {
     if (isAutoAdminLogout) {
         alert("You have been logged out due to inactivity.");
     }
-    fetch('http://localhost:5001/api/auth/admin/logout', {
+    fetch('/api/auth/admin/logout', {
         method: 'POST',
         credentials: 'include',
     }).finally(() => {
@@ -53,18 +53,9 @@ async function loadQuestions() {
     resultMsg.textContent = '';
 
     try {
-        // Wait at least 3000ms so spinner is visible
-        const SpinnerLoaderTime = 3000; // 3 seconds
-        const startTime = Date.now();
-
-        const res = await fetch('http://localhost:5001/api/questions', {
+        const res = await fetch('/api/questions', {
             credentials: 'include',
         });
-
-        const elapsed = Date.now() - startTime;
-        if (elapsed < SpinnerLoaderTime) {
-            await new Promise(resolve => setTimeout(resolve, SpinnerLoaderTime - elapsed));
-        }
 
         if (!res.ok) throw new Error(`Server returned ${res.status}`);
         const { success, data: questions } = await res.json();
@@ -90,9 +81,10 @@ async function loadQuestions() {
                 <button data-id="${q._id}">Delete</button>
             `;
 
-            // Delete button
-            const deleteButton = div.querySelector('button');
+// Delete button
+ const deleteButton = div.querySelector('button');
             deleteButton.addEventListener('click', async () => {
+                
                 const confirmResult = await Swal.fire({
                     title: 'Are you sure?',
                     text: 'This will permanently delete the question.',
@@ -105,7 +97,7 @@ async function loadQuestions() {
 
                 if (confirmResult.isConfirmed) {
                     try {
-                        const deleteRes = await fetch(`http://localhost:5001/api/questions/${q._id}`, {
+                        const deleteRes = await fetch(`/api/questions/${q._id}`, {
                             method: 'DELETE',
                             credentials: 'include'
                         });
@@ -154,7 +146,7 @@ form.addEventListener('submit', async (e) => {
     const options = optionsInput.split(',').map(opt => opt.trim());
 
     try {
-        const res = await fetch('http://localhost:5001/api/questions', {
+        const res = await fetch('/api/questions', {
             method: 'POST',
             credentials: 'include',
             headers: { 'Content-Type': 'application/json' },
@@ -179,8 +171,6 @@ form.addEventListener('submit', async (e) => {
 });
 
 //  Load User Results 
-const SpinnerLoaderResult = 3000; // 3000 ms = 3 second
-
 loadResultsBtn.addEventListener('click', async () => {
     resultsContainer.innerHTML = `
         <div id='loading-spinner'>
@@ -188,10 +178,8 @@ loadResultsBtn.addEventListener('click', async () => {
             <p style="margin: 2rem 0rem;">Loading Results...</p>
         </div>
     `;
-
-    setTimeout(async () => {
         try {
-            const res = await fetch('http://localhost:5001/api/results', {
+            const res = await fetch('/api/results', {
                 credentials: 'include',
             });
             if (!res.ok) throw new Error(`Server returned ${res.status}`);
@@ -228,14 +216,13 @@ loadResultsBtn.addEventListener('click', async () => {
             resultsContainer.innerHTML = '<p style="color:red;">Error loading results</p>';
             console.error(err);
         }
-    }, SpinnerLoaderResult); // wait 1 second before fetching
 });
 
 
 //  Refresh Quiz Count
 async function refreshAdminStats() {
     try {
-      const res = await fetch('http://localhost:5001/api/questions/count', {
+      const res = await fetch('/api/questions/count', {
         method: 'GET',
         credentials: 'include'
       });
