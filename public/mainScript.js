@@ -92,15 +92,16 @@ function fetchQuestion() {
   
     questionContainer.textContent = '';
   
-    const p = document.createElement('p');
-    p.textContent = 'No questions available.';
+    const para = document.createElement('p');
+    para.textContent = 'No questions available.';
   
-    // Add class and styling
-    p.classList.add('center');      
-    p.style.color = 'red';          // Or any color you like
-  
+     // Direct styling
+    para.style.textAlign = 'center';
+    para.style.color = 'red';
+    para.style.fontWeight = 'bold';
+    para.style.fontSize = '1.2rem';
     // Append to container
-    questionContainer.appendChild(p);
+    questionContainer.appendChild(para);
     return;
   }
 
