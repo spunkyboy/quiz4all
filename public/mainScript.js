@@ -88,7 +88,7 @@ function fetchQuestion() {
   const questionData = quizData[currentQuestionIndex];
 
   if (!questionData) {
-    questionContainer.innerHTML = '<p>No questions available.</p>';
+    questionContainer.textContent = '<p>No questions available.</p>';
     return;
   }
 
