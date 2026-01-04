@@ -8,7 +8,7 @@ const crypto = require('crypto');
 const router = express.Router();
 const inputValidator = require('validator');
 const sendEmailReq = require('../utils/sendEmail');
-const jwtSecret = process.env.JWT_SECRET;
+// const jwtSecret = process.env.JWT_SECRET;
 
 
 //sign in limiter
@@ -94,8 +94,8 @@ router.post('/admin/signin', async (req, res) => {
       return res.status(401).json({ message: 'Invalid username or password' });
     }
 // This prevent silent crash
-    if (!jwtSecret) {
-      console.error('❌ JWT_SECRET is missing');
+if (!process.env.JWT_SECRET) {
+  console.error('❌ JWT_SECRET is missing');
       return res.status(500).json({ message: 'Server misconfiguration' });
     }
     const token = jwt.sign(
@@ -103,7 +103,7 @@ router.post('/admin/signin', async (req, res) => {
                 email: adminSign.email, 
                 role: adminSign.role 
               }, 
-              jwtSecret,
+              process.env.JWT_SECRET,
               { expiresIn: '1h' });
         // Send token as an HTTP-only cookie
         res.cookie('token', token, {
@@ -212,14 +212,14 @@ router.post('/signin', ...signinMiddleWares, async (req, res) => {
     const isMatch = await bcrypt.compare(password, user.passwordHash);
     if (!isMatch) return res.status(401).json({ message: 'Invalid credentials' });
 
-    if (!jwtSecret) {
+    if (!process.env.JWT_SECRET) {
       console.error('❌ JWT_SECRET is missing');
       return res.status(500).json({ message: 'Server misconfiguration' });
     }
 
     const token = jwt.sign(
       { userId: user._id, email: user.email, role: user.role },
-      jwtSecret,
+      process.env.JWT_SECRET,
       { expiresIn: '1h' }
     );
 
