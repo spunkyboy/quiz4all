@@ -119,7 +119,7 @@ function fetchQuestion() {
     RETURN_TRUSTED_TYPE: true
   });
 
-  questionContainer.innerHTML = safeHTML;
+  questionContainer.textContent = safeHTML;
 
   const nextBtn = document.getElementById('next-btn');
   const submitBtn = document.getElementById('submit-btn');
@@ -248,7 +248,7 @@ async function showResultPage() {
     trustedHTML = DOMPurify.sanitize(resultMessage);
   }
 
-  resultElement.innerHTML = trustedHTML;
+  resultElement.textContent = trustedHTML;
 
   // Styling
   resultElement.style.color = isPassed ? '#28a745' : '#ff6347';
