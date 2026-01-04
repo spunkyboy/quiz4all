@@ -1,6 +1,7 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const jwtSecret= process.env.JWT_SECRET;
 const User = require('../models/User');
 const Admin = require('../models/Admin');
 const rateLimit = require('express-rate-limit'); // Use for rate-limiting 
@@ -9,7 +10,6 @@ const router = express.Router();
 const inputValidator = require('validator');
 const sendEmailReq = require('../utils/sendEmail');
 
-// const jwtSecret= process.env.JWT_SECRET;
 
 //sign in limiter
 const siginLimiter = rateLimit({
