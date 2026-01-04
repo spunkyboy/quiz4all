@@ -92,7 +92,11 @@ router.post('/admin/signin', async (req, res) => {
     if (!passwordMatch) {
       return res.status(401).json({ message: 'Invalid username or password' });
     }
-
+// This prevent silent crash
+    if (!process.env.JWT_SECRET) {
+      console.error('❌ JWT_SECRET is missing');
+      return res.status(500).json({ message: 'Server misconfiguration' });
+    }
     const token = jwt.sign(
               { userId: adminSign._id, 
                 email: adminSign.email, 
@@ -124,7 +128,6 @@ router.post('/admin/logout', (req, res) => {
     secure: true,     // Must match the cookie options set during signin
     sameSite: 'None',
     path: '/', 
-    // domain: 'localhost'       // Must match as well
   });
 
   res.status(200).json({ message: 'Logged out' });
@@ -208,7 +211,7 @@ router.post('/signin', ...signinMiddleWares, async (req, res) => {
       return res.status(401).json({ message: 'Invalid email or password' });
     }
     const isMatch = await bcrypt.compare(password, user.passwordHash);
-     console.log(user.passwordHash);
+    //  console.log(user.passwordHash);
     if (!isMatch) {
        return res.status(401).json({ message: 'Invalid credential'});
     }
