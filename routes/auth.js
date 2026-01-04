@@ -1,7 +1,6 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const jwtSecret= process.env.JWT_SECRET;
 const User = require('../models/User');
 const Admin = require('../models/Admin');
 const rateLimit = require('express-rate-limit'); // Use for rate-limiting 
@@ -9,6 +8,7 @@ const crypto = require('crypto');
 const router = express.Router();
 const inputValidator = require('validator');
 const sendEmailReq = require('../utils/sendEmail');
+const jwtSecret = process.env.JWT_SECRET;
 
 
 //sign in limiter
@@ -77,6 +77,7 @@ router.post('/admin/signup', async (req, res) => {
   }
 });
 
+
 //Admin Signin
 router.post('/admin/signin', async (req, res) => { 
   const { email, password } = req.body;
@@ -93,7 +94,7 @@ router.post('/admin/signin', async (req, res) => {
       return res.status(401).json({ message: 'Invalid username or password' });
     }
 // This prevent silent crash
-    if (!process.env.JWT_SECRET) {
+    if (!jwtSecret) {
       console.error('❌ JWT_SECRET is missing');
       return res.status(500).json({ message: 'Server misconfiguration' });
     }
@@ -102,7 +103,7 @@ router.post('/admin/signin', async (req, res) => {
                 email: adminSign.email, 
                 role: adminSign.role 
               }, 
-              process.env.JWT_SECRET,
+              jwtSecret,
               { expiresIn: '1h' });
         // Send token as an HTTP-only cookie
         res.cookie('token', token, {
@@ -211,7 +212,6 @@ router.post('/signin', ...signinMiddleWares, async (req, res) => {
     const isMatch = await bcrypt.compare(password, user.passwordHash);
     if (!isMatch) return res.status(401).json({ message: 'Invalid credentials' });
 
-    const jwtSecret = process.env.JWT_SECRET;
     if (!jwtSecret) {
       console.error('❌ JWT_SECRET is missing');
       return res.status(500).json({ message: 'Server misconfiguration' });
