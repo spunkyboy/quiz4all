@@ -98,13 +98,13 @@ router.post('/admin/signin', async (req, res) => {
                 email: adminSign.email, 
                 role: adminSign.role 
               }, 
-              jwtSecret, 
+              process.env.JWT_SECRET,
               { expiresIn: '1h' });
         // Send token as an HTTP-only cookie
         res.cookie('token', token, {
           httpOnly: true,
-          secure: false, // set to true when HTTPS in production!
-          sameSite: 'Lax', // or 'Lax' if your frontend is on a different origin
+          secure: true, // set to true when HTTPS in production!
+          sameSite: 'None', // or 'Lax' if your frontend is on a different origin
           // maxAge: 60 * 60 * 1000, // 1 hour
           path: '/'
         });
@@ -121,8 +121,8 @@ router.post('/admin/logout', (req, res) => {
 
   res.clearCookie('token', {
     httpOnly: true,
-    secure: false,     // Must match the cookie options set during signin
-    sameSite: 'Lax',
+    secure: true,     // Must match the cookie options set during signin
+    sameSite: 'None',
     path: '/', 
     // domain: 'localhost'       // Must match as well
   });
@@ -218,8 +218,8 @@ router.post('/signin', ...signinMiddleWares, async (req, res) => {
     // Send token as an HTTP-only cookie
         res.cookie('token', token, {
           httpOnly: true,
-          secure: false, // Use HTTPS in production!
-          sameSite: 'Lax', // or 'Lax' if your frontend is on a different origin
+          secure: true, // Use HTTPS in production!
+          sameSite: 'None', // or 'Lax' if your frontend is on a different origin
           maxAge: 60 * 60 * 1000, // 1 hour
           path: '/'
         });
