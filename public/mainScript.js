@@ -88,7 +88,19 @@ function fetchQuestion() {
   const questionData = quizData[currentQuestionIndex];
 
   if (!questionData) {
-    questionContainer.textContent = '<p>No questions available.</p>';
+    const questionContainer = document.getElementById('question-container');
+  
+    questionContainer.textContent = '';
+  
+    const p = document.createElement('p');
+    p.textContent = 'No questions available.';
+  
+    // Add class and styling
+    p.classList.add('center');      
+    p.style.color = 'red';          // Or any color you like
+  
+    // Append to container
+    questionContainer.appendChild(p);
     return;
   }
 
