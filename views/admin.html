@@ -57,14 +57,11 @@ if (window.trustedTypes && !window.trustedTypes.swalPolicy) {
     createScriptURL: url => url
   });
 }
- // Navigate to activities dashboard
- document.getElementById('viewActivitiesBtn')?.addEventListener('click', function() {
-    window.location.href = '/admin/activities';
-  });
+
 </script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
-<script src="https://unpkg.com/dompurify@3.0.6/dist/purify.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js" defer></script>
+<script src="https://unpkg.com/dompurify@3.0.6/dist/purify.min.js" defer></script>
 <script src="https://kit.fontawesome.com/5d07f027c2.js"></script>
-<script src="/adminScript.js"></script>
+<script src="/adminScript.js" defer></script>
 </body>
 </html>

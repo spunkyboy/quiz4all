@@ -1,5 +1,12 @@
+# Node modules
 node_modules/
+
+# Environment files
 .env
 .env.test
+
+# Editor/IDE files
 .vscode/
+
+# Mac system files
 .DS_Store

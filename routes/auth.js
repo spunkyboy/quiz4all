@@ -9,7 +9,7 @@ const router = express.Router();
 const inputValidator = require('validator');
 const sendEmailReq = require('../utils/sendEmail');
 
-const jwtSecret= process.env.JWT_SECRET;
+// const jwtSecret= process.env.JWT_SECRET;
 
 //sign in limiter
 const siginLimiter = rateLimit({
@@ -208,7 +208,7 @@ router.post('/signin', ...signinMiddleWares, async (req, res) => {
       return res.status(401).json({ message: 'Invalid email or password' });
     }
     const isMatch = await bcrypt.compare(password, user.passwordHash);
-
+     console.log(user.passwordHash);
     if (!isMatch) {
        return res.status(401).json({ message: 'Invalid credential'});
     }

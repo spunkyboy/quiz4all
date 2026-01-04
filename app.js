@@ -68,15 +68,14 @@ app.use(
   })
 );
 
-// ---------- DEVELOPMENT: disable CSS caching ----------
+// DEVELOPMENT: disable CSS caching 
 if (process.env.NODE_ENV !== 'production') {
-  app.use('/css', (req, res, next) => {
+  app.use(['/css','/js'], (req, res, next) => {
     res.set('Cache-Control', 'no-store');
     next();
   });
 }
-
-// ---------- STATIC ASSETS (CSS, JS, images, etc.) ----------
+//  STATIC ASSETS (CSS, JS, images, etc.) 
 const thirtyDays = 30 * 24 * 60 * 60 * 1000; // 30 days in milliseconds
 
 app.use(express.static(path.join(__dirname, 'public'), {
@@ -122,7 +121,6 @@ function htmlIndexAdminAdminsigninup(res, filePath) {
   }
 
   // console.log("[helper] Serving HTML file:", filePath);
-
   fs.readFile(filePath, "utf8", (err, html) => {
     if (err) {
       res.status(500).send("Error loading HTML");
@@ -139,10 +137,9 @@ function htmlIndexAdminAdminsigninup(res, filePath) {
   });
 }
 
-
-
 app.use('/api/auth', authRoutes);
 app.use('/api/quiz', quizRoutes);
 app.use('/api/questions', questionRoutes);
 app.use('/api/results', resultRoutes);
+
 module.exports = app;

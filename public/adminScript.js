@@ -20,7 +20,7 @@ function resetTimer() {
         logoutAdmin();
     }, INACTIVITY_LIMIT);
 }
-
+// Logout function Admin
 function logoutAdmin() {
     if (isAutoAdminLogout) {
         alert("You have been logged out due to inactivity.");
@@ -35,6 +35,8 @@ function logoutAdmin() {
 
 // Event listeners for logout and activity
 if (logoutBtnAdmin) logoutBtnAdmin.addEventListener('click', logoutAdmin);
+
+// Reset timer
 window.onload = resetTimer;
 document.onmousemove = resetTimer;
 document.onkeydown = resetTimer;
