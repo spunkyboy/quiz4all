@@ -315,14 +315,17 @@ document.getElementById('signin-form').addEventListener('submit', async function
     if (response.ok) {
       const loadingEntry = document.createElement('div');
       loadingEntry.id = 'loading-spinner';
-    
-      loadingEntry.textContent = DOMPurify.sanitize(`
-        <div class='spinner-roll'></div>
-        <p>Loading your quiz...</p>
-      `);
-    
+
+      const spinner = document.createElement('div');
+      spinner.className = 'spinner-roll';
+
+      const text = document.createElement('p');
+      text.textContent = 'Loading your quiz...';
+
+      loadingEntry.appendChild(spinner);
+      loadingEntry.appendChild(text);
       document.body.appendChild(loadingEntry);
-    
+
       try {
         await Promise.all([
           fetchQuizDataAndStart(),
@@ -331,9 +334,7 @@ document.getElementById('signin-form').addEventListener('submit', async function
       } finally {
         loadingEntry.remove();
       }
-    }
-     else {
-      // Show modal with error message
+    } else {
       errorMessage.textContent = data.message || 'Login failed';
       errorModal.classList.remove('hidden');
     }
@@ -343,6 +344,7 @@ document.getElementById('signin-form').addEventListener('submit', async function
     errorModal.classList.remove('hidden');
   }
 });
+
 
 async function loadUser() {
   try {
