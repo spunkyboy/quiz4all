@@ -316,7 +316,7 @@ document.getElementById('signin-form').addEventListener('submit', async function
       const loadingEntry = document.createElement('div');
       loadingEntry.id = 'loading-spinner';
     
-      loadingEntry.innerHTML = DOMPurify.sanitize(`
+      loadingEntry.textContent = DOMPurify.sanitize(`
         <div class='spinner-roll'></div>
         <p>Loading your quiz...</p>
       `);
