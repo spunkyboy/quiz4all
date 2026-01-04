@@ -192,47 +192,46 @@ router.post('/signin', ...signinMiddleWares, async (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
-      return res.status(400).json({ message: 'Email and password are required' });
-
+    return res.status(400).json({ message: 'Email and password are required' });
   }
-   //validate email format
-   if (!inputValidator.isEmail(email)){
+
+  if (!inputValidator.isEmail(email)) {
     return res.status(400).json({ message: 'Invalid email format' });
-  }  
-  
-    //validate email format
-    if (!inputValidator.isLength(password, { min: 8})){
-      return res.status(400).json({ message: 'Password must be at least 8 charactors long' });
-    } 
+  }
+
+  if (!inputValidator.isLength(password, { min: 8 })) {
+    return res.status(400).json({ message: 'Password must be at least 8 characters long' });
+  }
+
   try {
     const normalizedEmail = email.toLowerCase().trim();
     const user = await User.findOne({ email: normalizedEmail });
-    if (!user) {
-      return res.status(401).json({ message: 'Invalid email or password' });
-    }
-    const isMatch = await bcrypt.compare(password, user.passwordHash);
-    //  console.log(user.passwordHash);
-    if (!isMatch) {
-       return res.status(401).json({ message: 'Invalid credential'});
-    }
-    const token = jwt.sign(
-      { userId: user._id, email: user.email, role: user.role }, jwtSecret, { expiresIn: '1h' });
+    if (!user) return res.status(401).json({ message: 'Invalid email or password' });
 
-    // Send token as an HTTP-only cookie
-        res.cookie('token', token, {
-          httpOnly: true,
-          secure: true, // Use HTTPS in production!
-          sameSite: 'None', // or 'Lax' if your frontend is on a different origin
-          maxAge: 60 * 60 * 1000, // 1 hour
-          path: '/'
-        });
-    
-   return res.status(200).json({ 
-      token,
-      email: user.email,
-      role: user.role
+    const isMatch = await bcrypt.compare(password, user.passwordHash);
+    if (!isMatch) return res.status(401).json({ message: 'Invalid credentials' });
+
+    const jwtSecret = process.env.JWT_SECRET;
+    if (!jwtSecret) {
+      console.error('❌ JWT_SECRET is missing');
+      return res.status(500).json({ message: 'Server misconfiguration' });
+    }
+
+    const token = jwt.sign(
+      { userId: user._id, email: user.email, role: user.role },
+      jwtSecret,
+      { expiresIn: '1h' }
+    );
+
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'None',
+      maxAge: 60 * 60 * 1000,
+      path: '/'
     });
 
+    return res.status(200).json({ token, email: user.email, role: user.role });
   } catch (err) {
     console.error('Signin error:', err);
     return res.status(500).json({ message: 'Server error' });
