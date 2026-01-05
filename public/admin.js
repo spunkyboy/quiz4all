@@ -33,8 +33,8 @@ adminForm.addEventListener('submit', async (e) => {
 
   // Use relative URLs (works locally + in production)
   const endpoint = isSignIn
-    ? '/api/auth/admin/signin'
-    : '/api/auth/admin/signup';
+    ? '/api/auth/office/signin'
+    : '/api/auth/office/signup';
 
   try {
     message.style.color = '#e6a522';
