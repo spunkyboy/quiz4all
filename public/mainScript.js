@@ -90,20 +90,22 @@ function fetchQuestion() {
   if (!questionData) {
     const questionContainer = document.getElementById('question-container');
   
+    // Clear previous content
     questionContainer.textContent = '';
   
-    const para = document.createElement('p');
-    para.textContent = 'No questions available.';
+    const p = document.createElement('p');
+    p.textContent = 'No questions available.';
   
-     // Direct styling
-    para.style.textAlign = 'center';
-    para.style.color = 'red';
-    para.style.fontWeight = 'bold';
-    para.style.fontSize = '1.2rem';
-    // Append to container
-    questionContainer.appendChild(para);
+    // Direct styling
+    p.style.textAlign = 'center';
+    p.style.color = 'red';
+    p.style.fontWeight = 'bold';
+    p.style.fontSize = '1.2rem';
+  
+    questionContainer.appendChild(p);
     return;
   }
+  
 
   // Build HTML safely
   const untrustedHTML = `
