@@ -80,6 +80,103 @@ async function fetchQuizDataAndStart() {
   }
 }
 // Fetch question
+// function fetchQuestion() {
+//   const progress = document.getElementById('quiz-progress');
+//   progress.textContent = `Question ${currentQuestionIndex + 1} of ${quizData.length}`;
+
+//   const questionContainer = document.getElementById('question-container');
+//   const questionData = quizData[currentQuestionIndex];
+
+//   if (!questionData) {
+//     const questionContainer = document.getElementById('question-container');
+  
+//     // Clear previous content
+//     questionContainer.textContent = '';
+  
+//     const p = document.createElement('p');
+//     p.textContent = 'No questions available.';
+  
+//     // Direct styling
+//     p.style.textAlign = 'center';
+//     p.style.color = 'red';
+//     p.style.fontWeight = 'bold';
+//     p.style.fontSize = '1.2rem';
+  
+//     questionContainer.appendChild(p);
+//     return;
+//   }
+  
+
+//   // Build HTML safely
+//   const untrustedHTML = `
+//     <fieldset class="quiz-class">
+//       <legend class="quiz-question">${questionData.question}</legend>
+//       <div class="quiz-radio-text">
+//         ${questionData.options.map((option, idx) => `
+//           <div class="option-wrapper">
+//             <input 
+//               type="radio"
+//               id="option-${idx}"
+//               name="answer"
+//               value="${option}"
+//               aria-label="${option}"
+//             />
+//             <label for="option-${idx}" class="option-label">
+//               ${option}
+//             </label>
+//           </div>
+//         `).join('')}
+//       </div>
+//     </fieldset>
+//   `;
+
+//   const safeHTML = DOMPurify.sanitize(untrustedHTML, {
+//     RETURN_TRUSTED_TYPE: true
+//   });
+
+//   questionContainer.textContent = safeHTML;
+
+//   const nextBtn = document.getElementById('next-btn');
+//   const submitBtn = document.getElementById('submit-btn');
+//   const radios = document.querySelectorAll('input[name="answer"]');
+
+//   nextBtn.disabled = true;
+//   submitBtn.disabled = true;
+
+//   // Button visibility
+//   if (currentQuestionIndex === quizData.length - 1) {
+//     nextBtn.style.display = 'none';
+//     submitBtn.style.display = 'inline-block';
+//   } else {
+//     nextBtn.style.display = 'inline-block';
+//     submitBtn.style.display = 'none';
+//   }
+
+//   // Restore previous selection
+//   const savedAnswer = userAnswers[currentQuestionIndex];
+//   if (savedAnswer) {
+//     const radio = document.querySelector(`input[value="${savedAnswer}"]`);
+//     if (radio) {
+//       radio.checked = true;
+//       enableNavButtons();
+//     }
+//   }
+
+//   radios.forEach(radio => {
+//     radio.addEventListener('change', () => {
+//       userAnswers[currentQuestionIndex] = radio.value;
+//       enableNavButtons();
+//     });
+//   });
+
+//   function enableNavButtons() {
+//     if (currentQuestionIndex === quizData.length - 1) {
+//       submitBtn.disabled = false;
+//     } else {
+//       nextBtn.disabled = false;
+//     }
+//   }
+// }
 function fetchQuestion() {
   const progress = document.getElementById('quiz-progress');
   progress.textContent = `Question ${currentQuestionIndex + 1} of ${quizData.length}`;
@@ -87,54 +184,59 @@ function fetchQuestion() {
   const questionContainer = document.getElementById('question-container');
   const questionData = quizData[currentQuestionIndex];
 
+  // Clear previous content safely
+  questionContainer.textContent = '';
+
+  // No questions case
   if (!questionData) {
-    const questionContainer = document.getElementById('question-container');
-  
-    // Clear previous content
-    questionContainer.textContent = '';
-  
     const p = document.createElement('p');
     p.textContent = 'No questions available.';
-  
-    // Direct styling
     p.style.textAlign = 'center';
     p.style.color = 'red';
     p.style.fontWeight = 'bold';
     p.style.fontSize = '1.2rem';
-  
     questionContainer.appendChild(p);
     return;
   }
-  
 
-  // Build HTML safely
-  const untrustedHTML = `
-    <fieldset class="quiz-class">
-      <legend class="quiz-question">${questionData.question}</legend>
-      <div class="quiz-radio-text">
-        ${questionData.options.map((option, idx) => `
-          <div class="option-wrapper">
-            <input 
-              type="radio"
-              id="option-${idx}"
-              name="answer"
-              value="${option}"
-              aria-label="${option}"
-            />
-            <label for="option-${idx}" class="option-label">
-              ${option}
-            </label>
-          </div>
-        `).join('')}
-      </div>
-    </fieldset>
-  `;
+  /* ===== BUILD QUIZ UI SAFELY (NO innerHTML) ===== */
 
-  const safeHTML = DOMPurify.sanitize(untrustedHTML, {
-    RETURN_TRUSTED_TYPE: true
+  const fieldset = document.createElement('fieldset');
+  fieldset.className = 'quiz-class';
+
+  const legend = document.createElement('legend');
+  legend.className = 'quiz-question';
+  legend.textContent = questionData.question;
+  fieldset.appendChild(legend);
+
+  const optionsWrapper = document.createElement('div');
+  optionsWrapper.className = 'quiz-radio-text';
+
+  questionData.options.forEach((option, idx) => {
+    const optionWrapper = document.createElement('div');
+    optionWrapper.className = 'option-wrapper';
+
+    const input = document.createElement('input');
+    input.type = 'radio';
+    input.name = 'answer';
+    input.id = `option-${idx}`;
+    input.value = option;
+    input.setAttribute('aria-label', option);
+
+    const label = document.createElement('label');
+    label.className = 'option-label';
+    label.htmlFor = input.id;
+    label.textContent = option;
+
+    optionWrapper.appendChild(input);
+    optionWrapper.appendChild(label);
+    optionsWrapper.appendChild(optionWrapper);
   });
 
-  questionContainer.textContent = safeHTML;
+  fieldset.appendChild(optionsWrapper);
+  questionContainer.appendChild(fieldset);
+
+  /* ===== BUTTON LOGIC ===== */
 
   const nextBtn = document.getElementById('next-btn');
   const submitBtn = document.getElementById('submit-btn');
@@ -143,7 +245,6 @@ function fetchQuestion() {
   nextBtn.disabled = true;
   submitBtn.disabled = true;
 
-  // Button visibility
   if (currentQuestionIndex === quizData.length - 1) {
     nextBtn.style.display = 'none';
     submitBtn.style.display = 'inline-block';
@@ -152,7 +253,7 @@ function fetchQuestion() {
     submitBtn.style.display = 'none';
   }
 
-  // Restore previous selection
+  // Restore saved answer
   const savedAnswer = userAnswers[currentQuestionIndex];
   if (savedAnswer) {
     const radio = document.querySelector(`input[value="${savedAnswer}"]`);
@@ -177,6 +278,7 @@ function fetchQuestion() {
     }
   }
 }
+
 // Request user name
 async function requestUsername() {
   return new Promise(resolve => {
