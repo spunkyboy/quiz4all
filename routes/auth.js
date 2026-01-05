@@ -36,7 +36,7 @@ if (process.env.NODE_ENV !== 'test') {
 }
 
 //Admin Signup
-router.post('/admin/signup', async (req, res) => {
+router.post('/office/signup', async (req, res) => {
   const emailRegexAdmin = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const strongPasswordRegexAdmin = /^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
   const { email, password } = req.body;
@@ -79,7 +79,7 @@ router.post('/admin/signup', async (req, res) => {
 
 
 //Admin Signin
-router.post('/admin/signin', async (req, res) => { 
+router.post('/office/signin', async (req, res) => { 
   const { email, password } = req.body;
 
   try {
@@ -121,7 +121,7 @@ if (!jwtSecret) {
 });
 
 //admin logout
-router.post('/admin/logout', (req, res) => {
+router.post('/office/logout', (req, res) => {
   console.log('🚪 Logout Admin called');
 
   res.clearCookie('token', {

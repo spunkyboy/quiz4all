@@ -90,7 +90,7 @@ app.get('/', (req, res) => {
   htmlIndexAdminAdminsigninup(res, filePath);
 });
 // Route for admin sign-in/signup page
-app.get('/admin/signin', (req, res) => {
+app.get('/office/signin', (req, res) => {
   const filePath = path.join(__dirname, 'views/admin.html');
   htmlIndexAdminAdminsigninup(res, filePath);
 });
