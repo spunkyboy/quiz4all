@@ -91,13 +91,13 @@ app.get('/', (req, res) => {
 });
 // Route for admin sign-in/signup page
 app.get('/admin/signin', (req, res) => {
-  const filePath = path.join(__dirname, 'views/adminsigninsignup.html');
+  const filePath = path.join(__dirname, 'views/admin.html');
   htmlIndexAdminAdminsigninup(res, filePath);
 });
 
 // Route for admin dashboard after login
 app.get('/admin', (req, res) => {
-  const filePath = path.join(__dirname, 'views/admin.html');
+  const filePath = path.join(__dirname, 'views/adminAccount.html');
   htmlIndexAdminAdminsigninup(res, filePath);
 });
 //route for forgot password to reset

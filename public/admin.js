@@ -61,7 +61,7 @@ adminForm.addEventListener('submit', async (e) => {
 
     //  Redirect immediately after successful sign-in
     if (isSignIn) {
-      window.location.href = '/admin';
+      window.location.href = '/adminAccount';
     }
 
   } catch (error) {
