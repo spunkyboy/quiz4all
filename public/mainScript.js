@@ -80,103 +80,6 @@ async function fetchQuizDataAndStart() {
   }
 }
 // Fetch question
-// function fetchQuestion() {
-//   const progress = document.getElementById('quiz-progress');
-//   progress.textContent = `Question ${currentQuestionIndex + 1} of ${quizData.length}`;
-
-//   const questionContainer = document.getElementById('question-container');
-//   const questionData = quizData[currentQuestionIndex];
-
-//   if (!questionData) {
-//     const questionContainer = document.getElementById('question-container');
-  
-//     // Clear previous content
-//     questionContainer.textContent = '';
-  
-//     const p = document.createElement('p');
-//     p.textContent = 'No questions available.';
-  
-//     // Direct styling
-//     p.style.textAlign = 'center';
-//     p.style.color = 'red';
-//     p.style.fontWeight = 'bold';
-//     p.style.fontSize = '1.2rem';
-  
-//     questionContainer.appendChild(p);
-//     return;
-//   }
-  
-
-//   // Build HTML safely
-//   const untrustedHTML = `
-//     <fieldset class="quiz-class">
-//       <legend class="quiz-question">${questionData.question}</legend>
-//       <div class="quiz-radio-text">
-//         ${questionData.options.map((option, idx) => `
-//           <div class="option-wrapper">
-//             <input 
-//               type="radio"
-//               id="option-${idx}"
-//               name="answer"
-//               value="${option}"
-//               aria-label="${option}"
-//             />
-//             <label for="option-${idx}" class="option-label">
-//               ${option}
-//             </label>
-//           </div>
-//         `).join('')}
-//       </div>
-//     </fieldset>
-//   `;
-
-//   const safeHTML = DOMPurify.sanitize(untrustedHTML, {
-//     RETURN_TRUSTED_TYPE: true
-//   });
-
-//   questionContainer.textContent = safeHTML;
-
-//   const nextBtn = document.getElementById('next-btn');
-//   const submitBtn = document.getElementById('submit-btn');
-//   const radios = document.querySelectorAll('input[name="answer"]');
-
-//   nextBtn.disabled = true;
-//   submitBtn.disabled = true;
-
-//   // Button visibility
-//   if (currentQuestionIndex === quizData.length - 1) {
-//     nextBtn.style.display = 'none';
-//     submitBtn.style.display = 'inline-block';
-//   } else {
-//     nextBtn.style.display = 'inline-block';
-//     submitBtn.style.display = 'none';
-//   }
-
-//   // Restore previous selection
-//   const savedAnswer = userAnswers[currentQuestionIndex];
-//   if (savedAnswer) {
-//     const radio = document.querySelector(`input[value="${savedAnswer}"]`);
-//     if (radio) {
-//       radio.checked = true;
-//       enableNavButtons();
-//     }
-//   }
-
-//   radios.forEach(radio => {
-//     radio.addEventListener('change', () => {
-//       userAnswers[currentQuestionIndex] = radio.value;
-//       enableNavButtons();
-//     });
-//   });
-
-//   function enableNavButtons() {
-//     if (currentQuestionIndex === quizData.length - 1) {
-//       submitBtn.disabled = false;
-//     } else {
-//       nextBtn.disabled = false;
-//     }
-//   }
-// }
 function fetchQuestion() {
   const progress = document.getElementById('quiz-progress');
   progress.textContent = `Question ${currentQuestionIndex + 1} of ${quizData.length}`;
@@ -347,9 +250,9 @@ async function showResultPage() {
   const retryBtn = document.getElementById('retry-btn');
 
   let resultMessage = isPassed
-    ? `🎉 <strong>Congratulations!</strong> You passed with ${score} / ${total}`
-    : `❌ <strong>You failed:</strong> ${score} / ${total}`;
-  resultMessage += `<br><strong>Time:</strong> ${formattedTime}`;
+    ? `🎉 Congratulations! You passed with ${score} / ${total}`
+    : `❌ You failed: ${score} / ${total}`;
+  resultMessage += ` | Time: ${formattedTime}`;
 
   // --- DOMPurify + fallback for browsers without Trusted Types ---
   let trustedHTML;

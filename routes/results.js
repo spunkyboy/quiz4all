@@ -3,7 +3,7 @@ const router = express.Router();
 const Result = require('../models/Result');
 
 
-//utility validate request ddata
+//utility validate request data
 function validationsResutl({username, score, total}){
  if(!username || score == null || total == null){
    return 'Missing required fields: username, score, or total';
@@ -15,7 +15,12 @@ function validationsResutl({username, score, total}){
 router.post('/', async (req, res) => {
   const { username, score, total, timeSpent, isPassed } = req.body;
 
-  const validateError = validationsResutl({username, score, total, isPassed});
+  const validateError = validationsResutl({
+    username, 
+    score, 
+    total, 
+    isPassed
+  });
     if(validateError){
       return res.status(400).json({ 
         message: validateError 
@@ -30,8 +35,8 @@ router.post('/', async (req, res) => {
     await newResult.save();
     //Success Response
     res.status(201).json({ message: 'Result saved' });
-  } catch (err) {
-    console.error('Error saving results', err);
+  } catch {
+    console.error('Error saving results');
     res.status(500).json({ message: 'Server error' });
   }
 });

@@ -75,7 +75,7 @@ if (process.env.NODE_ENV !== 'production') {
     next();
   });
 }
-//  STATIC ASSETS (CSS, JS, images, etc.) 
+//  STATIC ASSETS (CSS, JS) 
 const thirtyDays = 30 * 24 * 60 * 60 * 1000; // 30 days in milliseconds
 
 app.use(express.static(path.join(__dirname, 'public'), {
@@ -84,7 +84,7 @@ app.use(express.static(path.join(__dirname, 'public'), {
   lastModified: true
 }));
 
-// Serve index.html with nonce injected
+// Serve index.html 
 app.get('/', (req, res) => {
   const filePath = path.join(__dirname, 'views','index.html');
   htmlIndexAdminAdminsigninup(res, filePath);
