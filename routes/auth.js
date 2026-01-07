@@ -104,13 +104,13 @@ if (!jwtSecret) {
                 role: adminSign.role 
               }, 
               jwtSecret,
-              { expiresIn: '1h' });
+              { expiresIn: '8h' });
         // Send token as an HTTP-only cookie
         res.cookie('token', token, {
           httpOnly: true,
           secure: true, // set to true when HTTPS in production!
           sameSite: 'None', // or 'Lax' if your frontend is on a different origin
-          // maxAge: 60 * 60 * 1000, // 1 hour
+          maxAge: 8 * 60 * 60 * 1000, // 8 hour
           path: '/'
         });
       res.json({ token, email: adminSign.email, role:adminSign.role});

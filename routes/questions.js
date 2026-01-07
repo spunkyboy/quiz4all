@@ -8,6 +8,10 @@ const isAdminProtected = require('../middleware/usersAdmin');
 // CREATE a new question (admin only)
 router.post('/', authenToken, isAdminProtected, async (req, res) => {
   try {
+      // Only allow admins
+      if (req.user.role !== 'admin') {
+        return res.status(403).json({ message: 'Forbidden: Admins only' });
+      }
     let { question, options, answer } = req.body;
 
     if (!question || !options || !answer) {
