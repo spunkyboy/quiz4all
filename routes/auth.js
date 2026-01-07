@@ -183,6 +183,8 @@ if (!inputValidator.isStrongPassword(password, {
     const newUser = new User({
       email: email.toLowerCase(),
       passwordHash,
+      username: email.split('@')[0] // or let user provide it
+
     });
     console.log('New user object:', newUser);
 
