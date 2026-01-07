@@ -22,7 +22,8 @@ router.get('/', authenToken, async (req, res) => {
                     .digest('base64')
     }));
     res.json(questionsEachNonce);
-  } catch (err) {
+    // Prefix _err and might be use later
+  } catch {
     res.status(500).json({ message: 'Error fetching questions' });
   }
 });
@@ -91,7 +92,7 @@ router.get('/users', authenToken, async (req, res) => {
        email: user.email,
        role: req.user.role
       });
-  } catch (err) {
+  } catch {
     // console.error('Error in /users:', err);
     res.status(500).json({ message: 'Server error' });
   }

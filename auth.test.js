@@ -1,6 +1,5 @@
 require('dotenv').config({ path: '.env.test' });
 const request = require('supertest');
-const mongoose = require('mongoose');
 const bcrypt = require('bcrypt'); // Import bcrypt here
 const app = require('./app'); 
 const User = require('./models/User'); 

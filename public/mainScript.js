@@ -593,6 +593,8 @@ document.getElementById('prev-btn').addEventListener('click', function () {
 // User logout
 let logoutTimerUser;
 const INACTIVITY_LIMIT = 3 * 60 * 1000; // 3 minutes
+
+/* eslint-disable-next-line no-unused-vars */
 let isAutoLogout = false;
 
 function resetTimer() {
@@ -622,6 +624,8 @@ function logoutUser() {
   .catch(error => {
     console.error('Error during logout:', error);
   });
+  // Logout logic reset for next session
+  isAutoLogout = false;
 }
 // Buttons for users logout
   const logoutBtn = document.getElementById('user-logout');

@@ -46,9 +46,8 @@ router.get('/', async (req, res) => {
       count: results.length,
       data: results,
     });
-
-  } catch (err) {
-    // console.error('[GET /api/results] Error:', err);
+  } catch {
+    console.error('[GET /api/results] Error:');
     res.status(500).json({ success: false, message: 'Internal Server Error' });
   }
 });

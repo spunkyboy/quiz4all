@@ -1,10 +1,8 @@
 require('dotenv').config({ path: '.env.test' });
 const request = require('supertest');
 const app = require('./app'); // Your Express app
-const mongoose = require('mongoose');
-const Question = require('./models/Question');
 
-//it get it datababse and process.env.TEST_DB_URI from jest.setup.js
+//it get it process.env.TEST_DB_URI from jest.setup.js
 beforeAll(async () => {
 });
 
