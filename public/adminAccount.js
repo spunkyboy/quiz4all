@@ -25,7 +25,7 @@ function logoutAdmin() {
     if (isAutoAdminLogout) {
         alert("You have been logged out due to inactivity.");
     }
-    fetch('/api/auth/admin/logout', {
+    fetch('/api/auth/office/logout', {
         method: 'POST',
         credentials: 'include',
     }).finally(() => {
