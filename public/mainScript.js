@@ -199,7 +199,7 @@ function fetchQuestion() {
     return;
   }
 
-  /* ===== BUILD QUIZ UI SAFELY (NO innerHTML) ===== */
+  // BUILD QUIZ UI SAFELY (NO innerHTML)
 
   const fieldset = document.createElement('fieldset');
   fieldset.className = 'quiz-class';
@@ -217,6 +217,7 @@ function fetchQuestion() {
     optionWrapper.className = 'option-wrapper';
 
     const input = document.createElement('input');
+    input.className = 'all-input'
     input.type = 'radio';
     input.name = 'answer';
     input.id = `option-${idx}`;
@@ -236,7 +237,7 @@ function fetchQuestion() {
   fieldset.appendChild(optionsWrapper);
   questionContainer.appendChild(fieldset);
 
-  /* ===== BUTTON LOGIC ===== */
+  //  BUTTON LOGIC 
 
   const nextBtn = document.getElementById('next-btn');
   const submitBtn = document.getElementById('submit-btn');
