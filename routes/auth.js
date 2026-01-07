@@ -159,12 +159,15 @@ if (!inputValidator.isStrongPassword(password, {
       });
 }
   try {
+    console.log('Signup request:', email);
 
     const existingUser = await User.findOne({
       $or: [
         { email: email.toLowerCase() }
       ]
     });
+    console.log('Existing user check done:', existingUser);
+
 //checks if users already exist
     if (existingUser) {
       return res.status(400).json({ message: 'Email already exists' });
@@ -172,18 +175,23 @@ if (!inputValidator.isStrongPassword(password, {
    
 //protected password even database is compromised
     const salt = await bcrypt.genSalt(10);
+    console.log('Salt generated');
+
     const passwordHash = await bcrypt.hash(password, salt);
+    console.log('Password hashed');
 
     const newUser = new User({
       email: email.toLowerCase(),
       passwordHash,
     });
+    console.log('New user object:', newUser);
 
     await newUser.save();
+    console.log('User saved successfully');
 
    return res.status(201).json({ message: 'User created' });
   } catch (err) {
-    console.error('Server error:', err);
+    console.error('Signup failed:', err.message, err.stack);
     return res.status(500).json({ message: 'Server error' });
   }
 });
