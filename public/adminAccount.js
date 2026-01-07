@@ -29,7 +29,7 @@ function logoutAdmin() {
         method: 'POST',
         credentials: 'include',
     }).finally(() => {
-        window.location.href = '/admin/signin';
+        window.location.href = '/office/sigin';
     });
 }
 
