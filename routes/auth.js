@@ -180,16 +180,18 @@ router.post('/signup', async (req, res) => {
     });
 
     await newUser.save();
-    await sendVerificationEmail(newUser.email, token);
+    // await sendVerificationEmail(newUser.email, token);
 
     return res.status(201).json({
       message: 'User created. Please verify your email.'
     });
 
   } catch (err) {
-    console.error(err);
-    return res.status(500).json({ message: 'Server error' });
+    console.error('SIGNUP ERROR 👉', err.message);
+    console.error(err.stack);
+    return res.status(500).json({ message: err.message });
   }
+  
 });
 
 
