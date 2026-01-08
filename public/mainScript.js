@@ -429,6 +429,7 @@ document.getElementById('signup-form').addEventListener('submit', async function
     });
 
     const data = await response.json();
+    console.log('Signup response:', data);
 
     if (response.ok) {
       signupPrompt.style.color = 'green';

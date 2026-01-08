@@ -167,11 +167,11 @@ router.post('/signup', async (req, res) => {
       return res.status(400).json({ message: 'Email already exists' });
     }
 
-    if (!(await isDomainValidation(normalizedEmail))) {
-      return res.status(400).json({
-        message: 'Email domain is invalid or cannot receive emails'
-      });
-    }
+    // if (!(await isDomainValidation(normalizedEmail))) {
+    //   return res.status(400).json({
+    //     message: 'Email domain is invalid or cannot receive emails'
+    //   });
+    // }
 
     const token = crypto.randomBytes(32).toString('hex');
     const passwordHash = await bcrypt.hash(password, 10);
