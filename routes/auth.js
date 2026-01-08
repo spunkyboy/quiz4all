@@ -8,9 +8,8 @@ const crypto = require('crypto');
 const router = express.Router();
 const inputValidator = require('validator');
 const isDomainValidation = require('../middleware/domainValidate');
-// const sendEmailReq = require('../utils/sendEmail');
+const sendEmailReq = require('../utils/sendEmail');
 const sendVerificationEmail = require('../utils/sendVerificationEmail');
-
 const jwtSecret = process.env.JWT_SECRET;
 
 
