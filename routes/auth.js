@@ -158,7 +158,7 @@ router.post('/signup', async (req, res) => {
     minSymbols: 1
   })) {
     return res.status(400).json({
-      message: 'Password must be at least 8 characters and include uppercase letters, numbers, and symbols'
+      message: 'Password must be at least 8 characters and include uppercase, lowercase, numbers, and symbols'
     });
   }
 
@@ -166,12 +166,6 @@ router.post('/signup', async (req, res) => {
     if (await User.findOne({ email: normalizedEmail })) {
       return res.status(400).json({ message: 'Email already exists' });
     }
-
-    // if (!(await isDomainValidation(normalizedEmail))) {
-    //   return res.status(400).json({
-    //     message: 'Email domain is invalid or cannot receive emails'
-    //   });
-    // }
 
     const token = crypto.randomBytes(32).toString('hex');
     const passwordHash = await bcrypt.hash(password, 10);
@@ -197,6 +191,7 @@ router.post('/signup', async (req, res) => {
     return res.status(500).json({ message: 'Server error' });
   }
 });
+
 
 
 // User Signin
