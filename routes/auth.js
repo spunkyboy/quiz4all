@@ -7,7 +7,10 @@ const rateLimit = require('express-rate-limit'); // Use for rate-limiting
 const crypto = require('crypto');
 const router = express.Router();
 const inputValidator = require('validator');
+const isDomainValidation = require('../middleware/domainValidate');
 const sendEmailReq = require('../utils/sendEmail');
+const sendVerificationEmail = require('../utils/sendVerificationEmail');
+
 const jwtSecret = process.env.JWT_SECRET;
 
 
@@ -134,69 +137,84 @@ router.post('/office/logout', (req, res) => {
   res.status(200).json({ message: 'Logged out' });
 });
 
-// Users Signup
+// ==Users Signup==
+
 router.post('/signup', async (req, res) => {
   const { email, password } = req.body;
 
-//email and password check required
+  // 1. Required fields
   if (!email || !password) {
     return res.status(400).json({ message: 'Email and password are required' });
   }
-//validate email
-if (!inputValidator.isEmail(email)){
-  return res.status(400).json({ message: 'Invalid email format'});
-}
-//password validation
-if (!inputValidator.isStrongPassword(password, {
-      minLength: 8,
-      minLowercase: 1,
-      minUppercase: 1,
-      minNumbers: 1,
-      minSymbols: 1
-    })) {
-      return res.status(400).json({
-        message: 'Password must be at least 8 characters and include uppercase letters, numbers, and symbols'
-      });
-}
-  try {
-    console.log('Signup request:', email);
 
-    const existingUser = await User.findOne({
-      $or: [
-        { email: email.toLowerCase() }
-      ]
+  // 2. Email format
+  if (!inputValidator.isEmail(email)) {
+    return res.status(400).json({ message: 'Invalid email format' });
+  }
+
+  // 3. Strong password
+  if (!inputValidator.isStrongPassword(password, {
+    minLength: 8,
+    minLowercase: 1,
+    minUppercase: 1,
+    minNumbers: 1,
+    minSymbols: 1
+  })) {
+    return res.status(400).json({
+      message: 'Password must be at least 8 characters and include uppercase letters, numbers, and symbols'
     });
-    console.log('Existing user check done:', existingUser);
+  }
 
-//checks if users already exist
+  try {
+    // 4. Check if user exists
+    const existingUser = await User.findOne({
+      email: email.toLowerCase()
+    });
+
     if (existingUser) {
       return res.status(400).json({ message: 'Email already exists' });
     }
-   
-//protected password even database is compromised
+
+    // 5. Validate domain
+    const domainValid = await isDomainValidation(email);
+    if (!domainValid) {
+      return res.status(400).json({
+        message: 'Email domain is invalid or cannot receive emails'
+      });
+    }
+
+    // 6. Generate verification token
+    const token = crypto.randomBytes(32).toString('hex');
+
+    // 7. Hash password
     const salt = await bcrypt.genSalt(10);
-    console.log('Salt generated');
-
     const passwordHash = await bcrypt.hash(password, salt);
-    console.log('Password hashed');
 
+    // 8. Create user
     const newUser = new User({
       email: email.toLowerCase(),
       passwordHash,
-      username: email.split('@')[0] // or let user provide it
-
+      username: email.split('@')[0],
+      verificationToken: token,
+      verificationTokenExpires: Date.now() + 24 * 60 * 60 * 1000
     });
-    console.log('New user object:', newUser);
 
     await newUser.save();
-    console.log('User saved successfully');
 
-   return res.status(201).json({ message: 'User created' });
+    // 9. Send verification email
+    await sendVerificationEmail(newUser.email, token);
+
+    // 10. Final response (ONLY ONE)
+    return res.status(201).json({
+      message: 'User created. Please verify your email.'
+    });
+
   } catch (err) {
-    console.error('Signup failed:', err.message, err.stack);
+    console.error(err);
     return res.status(500).json({ message: 'Server error' });
   }
 });
+
 
 // User Signin
 router.post('/signin', ...signinMiddleWares, async (req, res) => {
@@ -248,7 +266,7 @@ router.post('/signin', ...signinMiddleWares, async (req, res) => {
   }
 });
 
-//users logout out (clear the cookies)
+// Users logout out (clear the cookies)
 router.post('/logout', (req, res) => {
   console.log('🚪 Logout Users called');
 
