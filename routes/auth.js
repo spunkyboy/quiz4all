@@ -140,18 +140,16 @@ router.post('/office/logout', (req, res) => {
 
 router.post('/signup', async (req, res) => {
   const { email, password } = req.body;
+  const normalizedEmail = email?.toLowerCase();
 
-  // 1. Required fields
   if (!email || !password) {
     return res.status(400).json({ message: 'Email and password are required' });
   }
 
-  // 2. Email format
-  if (!inputValidator.isEmail(email)) {
+  if (!inputValidator.isEmail(normalizedEmail)) {
     return res.status(400).json({ message: 'Invalid email format' });
   }
 
-  // 3. Strong password
   if (!inputValidator.isStrongPassword(password, {
     minLength: 8,
     minLowercase: 1,
@@ -165,45 +163,31 @@ router.post('/signup', async (req, res) => {
   }
 
   try {
-    // 4. Check if user exists
-    const existingUser = await User.findOne({
-      email: email.toLowerCase()
-    });
-
-    if (existingUser) {
+    if (await User.findOne({ email: normalizedEmail })) {
       return res.status(400).json({ message: 'Email already exists' });
     }
 
-    // 5. Validate domain
-    const domainValid = await isDomainValidation(email);
-    if (!domainValid) {
+    if (!(await isDomainValidation(normalizedEmail))) {
       return res.status(400).json({
         message: 'Email domain is invalid or cannot receive emails'
       });
     }
 
-    // 6. Generate verification token
     const token = crypto.randomBytes(32).toString('hex');
+    const passwordHash = await bcrypt.hash(password, 10);
 
-    // 7. Hash password
-    const salt = await bcrypt.genSalt(10);
-    const passwordHash = await bcrypt.hash(password, salt);
-
-    // 8. Create user
     const newUser = new User({
-      email: email.toLowerCase(),
+      email: normalizedEmail,
       passwordHash,
-      username: email.split('@')[0],
+      username: normalizedEmail.split('@')[0],
       verificationToken: token,
-      verificationTokenExpires: Date.now() + 24 * 60 * 60 * 1000
+      verificationTokenExpires: Date.now() + 86400000,
+      isVerified: false
     });
 
     await newUser.save();
-
-    // 9. Send verification email
     await sendVerificationEmail(newUser.email, token);
 
-    // 10. Final response (ONLY ONE)
     return res.status(201).json({
       message: 'User created. Please verify your email.'
     });
@@ -291,7 +275,7 @@ router.post("/forgot-password", async (req, res) => {
   user.resetPasswordExpire = Date.now() + 30 * 60 * 1000; // 30 min
   await user.save();
 
-  const resetUrl = `http://localhost:5001/reset-password?token=${resetToken}`;
+  const resetUrl = `/reset-password?token=${resetToken}`;
 
   await sendEmailReq(
     user.email,

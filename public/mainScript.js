@@ -397,51 +397,55 @@ async function loadUser() {
 window.addEventListener('DOMContentLoaded', loadUser);
 
 //signup for Users
-document.getElementById('signup-form').addEventListener('submit', async function(event) {
-    event.preventDefault();
-    const email = document.getElementById('signup-username').value.trim();
-    const password = document.getElementById('signup-password').value;
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const strongPasswordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
-    const signupPrompt = document.getElementById('signupPromptMsg');
+document.getElementById('signup-form').addEventListener('submit', async function (event) {
+  event.preventDefault();
 
-  // Email Check
+  const email = document.getElementById('signup-username').value.trim();
+  const password = document.getElementById('signup-password').value;
+  const signupPrompt = document.getElementById('signupPromptMsg');
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const strongPasswordRegex =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+
   if (!email || !emailRegex.test(email)) {
     signupPrompt.style.color = '#e7903c';
     signupPrompt.textContent = 'Please enter a valid email address.';
     return;
   }
 
-  // Password Strength Check
   if (!password || !strongPasswordRegex.test(password)) {
     signupPrompt.style.color = '#e7903c';
-    signupPrompt.textContent = 'Password must be at least 8 characters, include an uppercase letter, a number, and a special character.';
+    signupPrompt.textContent =
+      'Password must be at least 8 characters and include uppercase, lowercase, number, and symbol.';
     return;
   }
-    try {
-      const response = await fetch('/api/auth/signup', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
-      });
-  
-      const data = await response.json();
-  
-      if (response.ok) {
-        signupPrompt.style.color = 'green';
-        signupPrompt.textContent ='Sign up successful. Please sign in.';
-        showSignIn();
-        this.reset();
-      } else {
-        signupPrompt.style.color = '#e7903c';
-        signupPrompt.textContent = data.message || 'Failed to sign up';
-      }
-    } catch (err) {
+
+  try {
+    const response = await fetch('/api/auth/signup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      signupPrompt.style.color = 'green';
+      signupPrompt.textContent =
+        'Signup successful! Please check your email to verify your account.';
+      this.reset();
+    } else {
       signupPrompt.style.color = '#e7903c';
-      console.log('ERROR..', err);
-      signupPrompt.textContent = 'Network error';
+      signupPrompt.textContent = data.message || 'Failed to sign up';
     }
-  });
+  } catch (err) {
+    signupPrompt.style.color = '#e7903c';
+    signupPrompt.textContent = 'Network error';
+    console.error(err);
+  }
+});
+
   
 // Toggle show/hide password for sign-up
 document.getElementById('password-if').addEventListener('change', function() {
