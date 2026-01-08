@@ -142,14 +142,23 @@ router.post('/signup', async (req, res) => {
   const { email, password } = req.body;
   const normalizedEmail = email?.toLowerCase();
 
+  //  Required fields
   if (!email || !password) {
-    return res.status(400).json({ message: 'Email and password are required' });
+    return res.status(400).json({
+      success: false,
+      message: 'Email and password are required'
+    });
   }
 
+  //  Email format
   if (!inputValidator.isEmail(normalizedEmail)) {
-    return res.status(400).json({ message: 'Invalid email format' });
+    return res.status(400).json({
+      success: false,
+      message: 'Invalid email format'
+    });
   }
 
+  //  Strong password
   if (!inputValidator.isStrongPassword(password, {
     minLength: 8,
     minLowercase: 1,
@@ -158,15 +167,21 @@ router.post('/signup', async (req, res) => {
     minSymbols: 1
   })) {
     return res.status(400).json({
-      message: 'Password must be at least 8 characters and include uppercase, lowercase, numbers, and symbols'
+      success: false,
+      message: 'Password must include uppercase, lowercase, number, and symbol'
     });
   }
 
   try {
+    //  Check existing user
     if (await User.findOne({ email: normalizedEmail })) {
-      return res.status(400).json({ message: 'Email already exists' });
+      return res.status(400).json({
+        success: false,
+        message: 'Email already exists'
+      });
     }
 
+    //  Create user
     const token = crypto.randomBytes(32).toString('hex');
     const passwordHash = await bcrypt.hash(password, 10);
 
@@ -175,24 +190,34 @@ router.post('/signup', async (req, res) => {
       passwordHash,
       username: normalizedEmail.split('@')[0],
       verificationToken: token,
-      verificationTokenExpires: Date.now() + 86400000,
+      verificationTokenExpires: Date.now() + 24 * 60 * 60 * 1000,
       isVerified: false
     });
 
     await newUser.save();
+
+    //  Send verification email (enable later)
     // await sendVerificationEmail(newUser.email, token);
 
+    // SIGNUP SUCCESS
     return res.status(201).json({
-      message: 'User created. Please verify your email.'
+      success: true,
+      message: 'Signup successful. Please verify your email.',
+      user: {
+        email: newUser.email,
+        isVerified: newUser.isVerified
+      }
     });
 
   } catch (err) {
     console.error('SIGNUP ERROR 👉', err.message);
-    console.error(err.stack);
-    return res.status(500).json({ message: err.message });
+    return res.status(500).json({
+      success: false,
+      message: 'Server error'
+    });
   }
-  
 });
+
 
 
 
