@@ -1,5 +1,6 @@
 html, body{
   font-size: 16px;
+  background-color: red !important;
 }
 * {
   margin: 0;
@@ -729,7 +730,7 @@ h1 {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #e67219 !important;
+    background-color: #1c2833;
     min-height: calc(var(--vh, 1vh) * 100); 
   }
   //reset-password styles for tablets
