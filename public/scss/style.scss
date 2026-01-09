@@ -1,6 +1,5 @@
 html, body{
   font-size: 16px;
-  background-color: red !important;
 }
 * {
   margin: 0;
@@ -205,7 +204,9 @@ input {
   display: grid;
   justify-content: center;
   align-items: center;
-  background-color: #1c2833;
+  // background-color: #1c2833;
+  background-color: red !important;
+
   font-family: "Noto Sans", serif;
   padding: 2rem 0rem;
   color:#e0ffff;
