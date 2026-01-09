@@ -131,7 +131,7 @@ function htmlIndexAdminAdminsigninup(res, filePath) {
       // add nonce to ALL script tags (inline + src)
       .replace(/<script\b([^>]*)>/gi, `<script nonce="${nonce}"$1>`)
       // add nonce to all style tags
-      .replace(/<style\b([^>]*)>/gi, `<style nonce="${nonce}"$1>`);
+      // .replace(/<style\b([^>]*)>/gi, `<style nonce="${nonce}"$1>`);
 
     res.send(modifiedHtml);
   });

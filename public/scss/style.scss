@@ -31,15 +31,15 @@ a {
       gap: 2rem;   
       
       button {
-         flex: 0 0 auto;         /* do not grow, width auto */
-         padding: 1rem;   /* adjust height/width */
-         max-width: 18.75rem;        /*  minimum button width */
+         flex: 0 0 auto;         // do not grow, width auto 
+         padding: 1rem;   // adjust height/width 
+         max-width: 18.75rem;        //  minimum button width 
       }
 
       h2 {
-        flex: 1;                /* take remaining space */
-        margin: 0;              /* remove default h2 margin */
-        font-size: 1.5rem;      /* optional: adjust font size */
+        flex: 1;                // take remaining space 
+        margin: 0;              // remove default h2 margin 
+        font-size: 1.5rem;      // optional: adjust font size 
 
       }
   }
