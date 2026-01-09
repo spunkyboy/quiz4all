@@ -69,28 +69,28 @@ app.use(
 );
 
 // DEVELOPMENT: disable CSS caching 
-if (process.env.NODE_ENV !== 'production') {
-  app.use(['/css','/js'], (req, res, next) => {
-    res.set('Cache-Control', 'no-store');
-    next();
-  });
-}
+// if (process.env.NODE_ENV !== 'production') {
+//   app.use(['/css','/js'], (req, res, next) => {
+//     res.set('Cache-Control', 'no-store');
+//     next();
+//   });
+// }
 // //  STATIC ASSETS (CSS, JS) 
-// const thirtyDays = 30 * 24 * 60 * 60 * 1000; // 30 days in milliseconds
+const thirtyDays = 30 * 24 * 60 * 60 * 1000; // 30 days in milliseconds
 
-// // Serve static assets (CSS, JS)
-// app.use(express.static(path.join(__dirname, 'public'), {
-//   // Production: long cache, dev: no cache
-//   maxAge: process.env.NODE_ENV === 'production' ? thirtyDays : 0,
-//   etag: true,
-//   lastModified: true,
-//   setHeaders: (res, filePath) => {
-//     // Force CSS & JS files to always bypass cache if query string changes
-//     if (filePath.endsWith('.css') || filePath.endsWith('.js')) {
-//       res.setHeader('Cache-Control', 'public, max-age=0');
-//     }
-//   }
-// }));
+// Serve static assets (CSS, JS)
+app.use(express.static(path.join(__dirname, 'public'), {
+  // Production: long cache, dev: no cache
+  maxAge: process.env.NODE_ENV === 'production' ? thirtyDays : 0,
+  etag: true,
+  lastModified: true,
+  setHeaders: (res, filePath) => {
+    // Force CSS & JS files to always bypass cache if query string changes
+    if (filePath.endsWith('.css') || filePath.endsWith('.js')) {
+      res.setHeader('Cache-Control', 'public, max-age=0');
+    }
+  }
+}));
 
 
 // Serve index.html 
