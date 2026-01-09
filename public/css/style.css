@@ -13,6 +13,10 @@ a {
   color: #e0ffff;
 }
 
+.all-input {
+  line-height: 1.6;
+}
+
 #message {
   text-align: center;
   margin-top: 1.2rem;
@@ -152,7 +156,7 @@ input {
   cursor: pointer;
 }
 .quiz-class .notify-feedback {
-  margin: 30px 0;
+  margin: 1.875rem 0;
   text-align: center;
   font-weight: bold;
   color: rgb(226, 226, 19);
