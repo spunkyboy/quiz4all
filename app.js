@@ -79,16 +79,27 @@ app.use(
 const thirtyDays = 30 * 24 * 60 * 60 * 1000; // 30 days in milliseconds
 
 // Serve static assets (CSS, JS)
+// app.use(express.static(path.join(__dirname, 'public'), {
+//   // Production: long cache, dev: no cache
+//   maxAge: process.env.NODE_ENV === 'production' ? thirtyDays : 0,
+//   etag: true,
+//   lastModified: true,
+//   setHeaders: (res, filePath) => {
+//     // Force CSS & JS files to always bypass cache if query string changes
+//     if (filePath.endsWith('.css') || filePath.endsWith('.js')) {
+//       res.setHeader('Cache-Control', 'public, max-age=0');
+//     }
+//   }
+// }));
 app.use(express.static(path.join(__dirname, 'public'), {
-  // Production: long cache, dev: no cache
-  maxAge: process.env.NODE_ENV === 'production' ? thirtyDays : 0,
-  etag: true,
-  lastModified: true,
+  maxAge: 0,           // disable browser caching
+  etag: false,         // disable etag
+  lastModified: false, // disable lastModified
   setHeaders: (res, filePath) => {
-    // Force CSS & JS files to always bypass cache if query string changes
-    if (filePath.endsWith('.css') || filePath.endsWith('.js')) {
-      res.setHeader('Cache-Control', 'public, max-age=0');
-    }
+    // Optional: make absolutely sure browser does not cache
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
   }
 }));
 
