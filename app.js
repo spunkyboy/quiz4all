@@ -92,15 +92,15 @@ const thirtyDays = 30 * 24 * 60 * 60 * 1000; // 30 days in milliseconds
 //   }
 // }));
 app.use(express.static(path.join(__dirname, 'public'), {
-  // maxAge: 0,           // disable browser caching
-  // etag: false,         // disable etag
-  // lastModified: false, // disable lastModified
-  // setHeaders: (res, filePath) => {
-  //   // Optional: make absolutely sure browser does not cache
-  //   res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
-  //   res.setHeader('Pragma', 'no-cache');
-  //   res.setHeader('Expires', '0');
-  // }
+  maxAge: 0,           // disable browser caching
+  etag: false,         // disable etag
+  lastModified: false, // disable lastModified
+  setHeaders: (res, filePath) => {
+    // Optional: make absolutely sure browser does not cache
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+  }
 }));
 
 
