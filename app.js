@@ -69,12 +69,12 @@ app.use(
 );
 
 // DEVELOPMENT: disable CSS caching 
-// if (process.env.NODE_ENV !== 'production') {
-//   app.use(['/css','/js'], (req, res, next) => {
-//     res.set('Cache-Control', 'no-store');
-//     next();
-//   });
-// }
+if (process.env.NODE_ENV !== 'production') {
+  app.use(['/css','/js'], (req, res, next) => {
+    res.set('Cache-Control', 'no-store');
+    next();
+  });
+}
 // //  STATIC ASSETS (CSS, JS) 
 // const thirtyDays = 30 * 24 * 60 * 60 * 1000; // 30 days in milliseconds
 
