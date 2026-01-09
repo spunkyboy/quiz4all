@@ -1,5 +1,6 @@
 html, body{
   font-size: 16px;
+  background-color: red;
 }
 * {
   margin: 0;
@@ -62,7 +63,7 @@ a {
 .page.active {
   display: grid;
   width: 100vw;
-  max-width: 40rem;
+  max-width: 75rem;
   margin: 0 auto;
   padding: 3rem;
   gap: 3rem;
