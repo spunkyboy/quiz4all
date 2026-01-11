@@ -27,3 +27,4 @@ const sendEmailReq = async (to, subject, text, html) => {
 };
 
 module.exports = sendEmailReq;
+// Export to auth.js and sendVerificationEmail.js

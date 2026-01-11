@@ -5,7 +5,7 @@ const Question = require('../models/Question');
 const authenToken = require('../middleware/authenToken')
 const isAdminProtected = require('../middleware/usersAdmin');
 
-// CREATE a new question (admin only)
+// Create a new question (admin only)
 router.post('/', authenToken, isAdminProtected, async (req, res) => {
   try {
       // Only allow admins
@@ -19,7 +19,7 @@ router.post('/', authenToken, isAdminProtected, async (req, res) => {
         message: 'Please provide question, options, and answer.'
       });
     }
-
+// Quiz count
     const quizCount = await Question.countDocuments();
     if (quizCount >= 10) {
       return res.status(400).json({

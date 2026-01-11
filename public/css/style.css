@@ -33,14 +33,14 @@ a {
   gap: 2rem;
 }
 .page .logoutGreesting button {
-  flex: 0 0 auto; /* do not grow, width auto */
-  padding: 1rem; /* adjust height/width */
-  max-width: 18.75rem; /*  minimum button width */
+  flex: 0 0 auto;
+  padding: 1rem;
+  max-width: 18.75rem;
 }
 .page .logoutGreesting h2 {
-  flex: 1; /* take remaining space */
-  margin: 0; /* remove default h2 margin */
-  font-size: 1.5rem; /* optional: adjust font size */
+  flex: 1;
+  margin: 0;
+  font-size: 1.5rem;
 }
 .page #greet-message {
   order: 1;
@@ -59,7 +59,7 @@ a {
 .page.active {
   display: grid;
   width: 100vw;
-  max-width: 75rem;
+  max-width: 35rem;
   margin: 0 auto;
   padding: 3rem;
   gap: 3rem;

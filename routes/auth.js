@@ -7,17 +7,16 @@ const rateLimit = require('express-rate-limit'); // Use for rate-limiting
 const crypto = require('crypto');
 const router = express.Router();
 const inputValidator = require('validator');
-const isDomainValidation = require('../middleware/domainValidate');
-const sendEmailReq = require('../utils/sendEmail');
 const sendVerificationEmail = require('../utils/sendVerificationEmail');
+const sendEmailReq = require('../utils/sendEmail');
 const jwtSecret = process.env.JWT_SECRET;
 
 
-//sign in limiter
+// Sign in limiter
 const siginLimiter = rateLimit({
   windowMs: 2 * 60 * 1000,
   max: 3,
-  skipSuccessfulRequests: true,
+  skipSuccessfulRequests: true, // only count failed login attempts
   handler: (req, res) => {
     res.status(429).json({ message: 'Too many failed login attempts. Please try again later.' });
   },
@@ -31,13 +30,13 @@ const siginLimiter = rateLimit({
   }
 });
 
-//Only apply the rate limiter if you’re NOT running tests.
+// Only apply the rate limiter if you’re NOT running tests.
 const signinMiddleWares = [];
 if (process.env.NODE_ENV !== 'test') {
   signinMiddleWares.push(siginLimiter);
 }
 
-//Admin Signup
+// Admin Signup
 router.post('/office/signup', async (req, res) => {
   const emailRegexAdmin = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const strongPasswordRegexAdmin = /^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
@@ -46,13 +45,13 @@ router.post('/office/signup', async (req, res) => {
   if (!email || !password) {
     return res.status(400).json({ message: 'Email and password are required' });
   }
-//email check 
+// Email check 
   if (!email || !emailRegexAdmin.test(email)) {
       return res.status(400).json({
          message: 'Invalid email format'
       });
   }
-// password strength
+// Password strength
   if (!password || !strongPasswordRegexAdmin.test(password)) {
         return res.status(400).json({
           message: 'Password must be at least 8 characters and include uppercase letters, numbers, and symbols'
@@ -79,23 +78,22 @@ router.post('/office/signup', async (req, res) => {
   }
 });
 
-
 //Admin Signin
 router.post('/office/signin', async (req, res) => { 
   const { email, password } = req.body;
 
   try {
-    //email admin check
+    // Email admin check
     const adminSign = await Admin.findOne({ email: email.toLowerCase()});
     if (!adminSign) {
       return res.status(401).json({ message: 'Invalid username or password' });
     }
-   // paswword match
+   // Paswword match
     const passwordMatch = await bcrypt.compare(password, adminSign.passwordHash);
     if (!passwordMatch) {
       return res.status(401).json({ message: 'Invalid username or password' });
     }
-// This prevent silent crash
+
 if (!jwtSecret) {
   console.error('❌ JWT_SECRET is missing');
       return res.status(500).json({ message: 'Server misconfiguration' });
@@ -110,9 +108,9 @@ if (!jwtSecret) {
         // Send token as an HTTP-only cookie
         res.cookie('token', token, {
           httpOnly: true,
-          secure: true, // set to true when HTTPS in production!
-          sameSite: 'None', // or 'Lax' if your frontend is on a different origin
-          maxAge: 8 * 60 * 60 * 1000, // 8 hour
+          secure: process.env.NODE_ENV === 'production',
+          sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
+          maxAge: 8 * 60 * 60 * 1000, 
           path: '/'
         });
       res.json({ token, email: adminSign.email, role:adminSign.role});
@@ -136,8 +134,7 @@ router.post('/office/logout', (req, res) => {
   res.status(200).json({ message: 'Logged out' });
 });
 
-// ==Users Signup==
-
+// Users Signup
 router.post('/signup', async (req, res) => {
   const { email, password } = req.body;
   const normalizedEmail = email?.toLowerCase();
@@ -197,9 +194,9 @@ router.post('/signup', async (req, res) => {
     await newUser.save();
 
     //  Send verification email (enable later)
-    // await sendVerificationEmail(newUser.email, token);
+    await sendVerificationEmail(newUser.email, token);
 
-    // SIGNUP SUCCESS
+    // Sign up sucessful
     return res.status(201).json({
       success: true,
       message: 'Signup successful. Please verify your email.',
@@ -218,9 +215,6 @@ router.post('/signup', async (req, res) => {
   }
 });
 
-
-
-
 // User Signin
 router.post('/signin', ...signinMiddleWares, async (req, res) => {
   const { email, password } = req.body;
@@ -233,15 +227,17 @@ router.post('/signin', ...signinMiddleWares, async (req, res) => {
     return res.status(400).json({ message: 'Invalid email format' });
   }
 
-  if (!inputValidator.isLength(password, { min: 8 })) {
-    return res.status(400).json({ message: 'Password must be at least 8 characters long' });
-  }
-
   try {
     const normalizedEmail = email.toLowerCase().trim();
     const user = await User.findOne({ email: normalizedEmail });
     if (!user) return res.status(401).json({ message: 'Invalid email or password' });
-
+     
+    // Check if verified
+    if (!user.isVerified) {
+      return res.status(401).json({
+        message: 'Please verify your email before logging in'
+      });
+    }
     const isMatch = await bcrypt.compare(password, user.passwordHash);
     if (!isMatch) return res.status(401).json({ message: 'Invalid credentials' });
 
@@ -258,8 +254,8 @@ router.post('/signin', ...signinMiddleWares, async (req, res) => {
 
     res.cookie('token', token, {
       httpOnly: true,
-      secure: true,
-      sameSite: 'None',
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
       maxAge: 60 * 60 * 1000,
       path: '/'
     });
@@ -308,10 +304,10 @@ router.post("/forgot-password", async (req, res) => {
   res.send("Reset link sent to email");
 });
 
-// RESET PASSWORD
+// Reset password
 router.post("/reset-password", async (req, res) => {
   const { password, confirmPassword, token } = req.body;
-  // ensure strings
+  // Convert values strings
   const pwds = password?.toString();
   const confirmPwds = confirmPassword?.toString();
   // Required fields
@@ -358,7 +354,34 @@ if (pwds.trim() !== confirmPwds.trim()) {
   user.resetPasswordExpire = undefined;
 
   await user.save();
+
   res.send("Password reset successful");
+});
+
+// Sign up email verification
+router.get('/verify/:token', async (req, res) => {
+  // console.log('Verify route hit:', req.params.token);
+  const { token } = req.params;
+  console.log('Verify route hit with token:', token);
+
+try {
+  const user = await User.findOne({
+      verificationToken: token,
+      verificationTokenExpires: { $gt: Date.now() } // check if token expired
+  });
+
+  if (!user) return res.status(400).send('Invalid or expired verification link');
+
+  user.isVerified = true;
+  user.verificationToken = null;
+  user.verificationTokenExpires = null;
+
+  await user.save();
+
+} catch(err) {
+  console.error('VERIFY ERROR', err);
+  res.send('Email verified! You can now log in.');
+}
 });
 
 

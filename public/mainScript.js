@@ -102,8 +102,7 @@ function fetchQuestion() {
     return;
   }
 
-  // BUILD QUIZ UI SAFELY (NO innerHTML)
-
+  // BUILD QUIZ UI 
   const fieldset = document.createElement('fieldset');
   fieldset.className = 'quiz-class';
 
@@ -140,8 +139,7 @@ function fetchQuestion() {
   fieldset.appendChild(optionsWrapper);
   questionContainer.appendChild(fieldset);
 
-  //  BUTTON LOGIC 
-
+  //  Button logic
   const nextBtn = document.getElementById('next-btn');
   const submitBtn = document.getElementById('submit-btn');
   const radios = document.querySelectorAll('input[name="answer"]');
@@ -216,7 +214,7 @@ async function requestUsername() {
   });
 }
 
-
+// Show results 
 async function showResultPage() {
   const endTime = Date.now();
   const timeSpentMs = endTime - startTime;
@@ -366,7 +364,7 @@ document.getElementById('signin-form').addEventListener('submit', async function
   }
 });
 
-
+// Users email
 async function loadUser() {
   try {
     const res = await fetch('/api/quiz/users', {
@@ -376,13 +374,12 @@ async function loadUser() {
       credentials: 'include' // sends cookies
     });
 
+    const user = await res.json();
     if (!res.ok) {
       // User is not logged in or token invalid
       document.getElementById("greet-message").innerText = "You are not logged in.";
       return;
     }
-
-    const user = await res.json();
     document.getElementById("greet-message").innerText =
       `Welcome back, ${user.email.split("@")[0]}!`;
 
@@ -447,7 +444,7 @@ document.getElementById('signup-form').addEventListener('submit', async function
   }
 });
 
-  
+
 // Toggle show/hide password for sign-up
 document.getElementById('password-if').addEventListener('change', function() {
     const passwordField = document.getElementById('signup-password');

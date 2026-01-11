@@ -57,18 +57,16 @@ a {
         margin: 0rem 1rem;
     }
   }
-}
+} 
 
 .page.active {
   display: grid;
   width: 100vw;
-  max-width: 75rem;
+  max-width: 35rem;
   margin: 0 auto;
   padding: 3rem;
   gap: 3rem;
   box-sizing: border-box;
-  // text-align: center;
-  
   h1{
     font-family: "Noto Sans", serif;
     text-align: center;
