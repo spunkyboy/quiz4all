@@ -277,32 +277,50 @@ router.post('/logout', (req, res) => {
 
 // FORGOT PASSWORD
 router.post("/forgot-password", async (req, res) => {
-  const user = await User.findOne({ email: req.body.email });
+  try {
+    const { email } = req.body;
+    if (!email) {
+      return res.status(400).send("Email is required");
+    }
 
-  if (!user) {
-    return res.send("If the email exists, a reset link was sent");
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      // Always send the same response for security
+      return res.send("If the email exists, a reset link was sent");
+    }
+
+    // Generate reset token
+    const resetToken = crypto.randomBytes(32).toString("hex");
+    user.resetPasswordToken = crypto
+      .createHash("sha256")
+      .update(resetToken)
+      .digest("hex");
+    user.resetPasswordExpire = Date.now() + 30 * 60 * 1000; // 30 min
+
+    await user.save();
+
+    const resetUrl = `/reset-password?token=${resetToken}`;
+
+    // Send email safely
+    try {
+      await sendEmailReq(
+        user.email,
+        "Password Reset",
+        `Click to reset password: ${resetUrl}`
+      );
+    } catch (emailErr) {
+      console.error("Email sending failed:", emailErr);
+      // Optionally, you can still respond to avoid leaking info
+    }
+
+    res.send("Reset link sent to email");
+  } catch (err) {
+    console.error("Forgot password error:", err);
+    res.status(500).send("Something went wrong");
   }
-
-  const resetToken = crypto.randomBytes(32).toString("hex");
-
-  user.resetPasswordToken = crypto
-    .createHash("sha256")
-    .update(resetToken)
-    .digest("hex");
-
-  user.resetPasswordExpire = Date.now() + 30 * 60 * 1000; // 30 min
-  await user.save();
-
-  const resetUrl = `/reset-password?token=${resetToken}`;
-
-  await sendEmailReq(
-    user.email,
-    "Password Reset",
-    `Click to reset password: ${resetUrl}`
-  );
-
-  res.send("Reset link sent to email");
 });
+
 
 // Reset password
 router.post("/reset-password", async (req, res) => {
