@@ -304,7 +304,7 @@ router.post("/forgot-password", async (req, res) => {
 
     // Send email safely
     try {
-      await sendEmailReq(
+      sendEmailReq(
         user.email,
         "Password Reset",
         `Click to reset password: ${resetUrl}`

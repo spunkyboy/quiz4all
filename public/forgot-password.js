@@ -16,15 +16,15 @@ form.addEventListener('submit', async (e) => {
   loader.style.margin = '16px 0';
 
   let seconds = 5;
-  countdownEl.innerText = `${seconds}s`;
+  countdownEl.innerText = `${seconds}`;
 
   // Countdown interval
   const timerCount = setInterval(() => {
     seconds--;
     if (seconds > 0) {
-      countdownEl.innerText = `${seconds}s`;
+      countdownEl.innerText = `${seconds}`;
     } else {
-      countdownEl.innerText = '0s';
+      countdownEl.innerText = '0';
       clearInterval(timerCount); // stop interval at 0
     }
   }, 1000);
