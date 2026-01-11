@@ -8,38 +8,39 @@ form.addEventListener('submit', async (e) => {
 
   messageOutput.innerText = '';
   loader.style.display = 'block';
-  loader.style.fontFamily = 'Noto Sans, serif';   // set font
-  loader.style.fontSize = '18px';                  // font size
-  loader.style.fontWeight = 'bold';                // bold text
-  loader.style.textAlign = 'center';               // center text horizontally
-  loader.style.color = '#e0ffff';                  // text color
-  loader.style.margin = '16px 0';  
- 
- 
+  loader.style.fontFamily = 'Noto Sans, serif';
+  loader.style.fontSize = '18px';
+  loader.style.fontWeight = 'bold';
+  loader.style.textAlign = 'center';
+  loader.style.color = '#e0ffff';
+  loader.style.margin = '16px 0';
+
   let seconds = 5;
-  countdownEl.innerText = seconds;
-  
-  // Start countdown interval
+  countdownEl.innerText = `${seconds}s`;
+
+  // Countdown interval
   const timerCount = setInterval(() => {
     seconds--;
-    countdownEl.innerText = seconds;
-    if (seconds <= 0) {
-      clearInterval(timerCount);
+    if (seconds > 0) {
+      countdownEl.innerText = `${seconds}s`;
+    } else {
+      countdownEl.innerText = '0s';
+      clearInterval(timerCount); // stop interval at 0
     }
   }, 1000);
 
-  const formData = new FormData(form);
-  const email = formData.get('email');
+  const email = new FormData(form).get('email');
 
   try {
-    const resPromised = fetch('/api/auth/forgot-password', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email })
-    });
-
-    // Wait for **both fetch AND countdown** to finish/ destructure and res take the fist or grab the first value
-    const [resp] = await Promise.all([resPromised, new Promise(r => setTimeout(r, 5000))]);
+    // Wait for both fetch and countdown to finish
+    const [resp] = await Promise.all([
+      fetch('/api/auth/forgot-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      }),
+      new Promise((r) => setTimeout(r, 5000))
+    ]);
 
     const text = await resp.text();
     messageOutput.innerText = text;
@@ -48,6 +49,7 @@ form.addEventListener('submit', async (e) => {
     console.error(err);
   } finally {
     loader.style.display = 'none';
-    clearInterval(timerCount);
+    countdownEl.innerText = ''; // reset countdown
+    clearInterval(timerCount);   // make sure interval is cleared
   }
 });
