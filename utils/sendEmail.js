@@ -10,10 +10,11 @@ const nodemailer = require('nodemailer');
  */
 const sendEmailReq = async (to, subject, text, html) => {
   const transporter = nodemailer.createTransport({
-    service: "gmail",
+    host: "smtp.sendgrid.net",
+    port: 587,
     auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
+      user: process.env.SENDGRID_USER, // usually "apikey"
+      pass: process.env.SENDGRID_PASS, // your SendGrid API key
     },
   });
 
