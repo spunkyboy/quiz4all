@@ -7,7 +7,7 @@ const rateLimit = require('express-rate-limit'); // Use for rate-limiting
 const crypto = require('crypto');
 const router = express.Router();
 const inputValidator = require('validator');
-const sendVerificationEmail = require('../utils/sendVerificationEmail');
+// const sendVerificationEmail = require('../utils/sendVerificationEmail');
 const sendEmailReq = require('../utils/sendEmail');
 const jwtSecret = process.env.JWT_SECRET;
 
@@ -309,8 +309,8 @@ router.post("/forgot-password", async (req, res) => {
         "Password Reset",
         `Click to reset password: ${resetUrl}`
       );
-    } catch (emailErr) {
-      console.error("Email sending failed:", emailErr);
+    } catch (err) {
+      console.error("Email sending failed:", err);
       // Optionally, you can still respond to avoid leaking info
     }
 
