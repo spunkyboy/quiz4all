@@ -1,8 +1,7 @@
-
 let quizData = [];
 let currentQuestionIndex = 0;
 let userAnswers = [];
-
+let startTime; // Variable to store the start time of the quiz
 function showSignIn() {
     document.getElementById('signin-heading').classList.add('active');
     document.getElementById('signup-heading').classList.remove('active');
@@ -24,8 +23,6 @@ function showSignUp() {
   if (signUpBtn) {
     signUpBtn.addEventListener('click', showSignUp);
   }
-
-let startTime; // Variable to store the start time of the quiz
 
 function showQuizPage() {
     document.getElementById('quiz-page').classList.add('active');
@@ -296,7 +293,6 @@ async function showResultPage() {
     console.error('Failed to save username', err);
   }
 }
-
 document.getElementById('submit-btn').addEventListener('click', showResultPage);
 
 // Function to shuffle the questions array
@@ -364,22 +360,37 @@ document.getElementById('signin-form').addEventListener('submit', async function
   }
 });
 
-// Users email
+
 async function loadUser() {
   try {
-    const res = await fetch('/api/quiz/users', {
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' },
+    const token = localStorage.getItem("token");
 
-      credentials: 'include' // sends cookies
-    });
-
-    const user = await res.json();
-    if (!res.ok) {
-      // User is not logged in or token invalid
-      document.getElementById("greet-message").innerText = "You are not logged in.";
+    if (!token) {
+      document.getElementById("greet-message").innerText =
+        "You are not logged in.";
       return;
     }
+
+    const res = await fetch('/api/quiz/users', {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+
+    if (res.status === 401) {
+      localStorage.removeItem("token");
+      document.getElementById("greet-message").innerText =
+        "Session expired. Please log in again.";
+      return;
+    }
+
+    if (!res.ok) {
+      throw new Error("Failed to load user");
+    }
+
+    const user = await res.json();
+
     document.getElementById("greet-message").innerText =
       `Welcome back, ${user.email.split("@")[0]}!`;
 
@@ -389,9 +400,6 @@ async function loadUser() {
       "Something went wrong.";
   }
 }
-
-// Run on page load
-window.addEventListener('DOMContentLoaded', loadUser);
 
 //signup for Users
 document.getElementById('signup-form').addEventListener('submit', async function (event) {
@@ -426,7 +434,7 @@ document.getElementById('signup-form').addEventListener('submit', async function
     });
 
     const data = await response.json();
-    console.log('Signup response:', data);
+    // console.log('Signup response:', data);
 
     if (response.ok) {
       signupPrompt.style.color = 'green';
@@ -592,4 +600,111 @@ window.onload = function() {
     document.getElementById('signin-username').focus();
 };
 
+// window.addEventListener('DOMContentLoaded', () => {
+//   document.getElementById('guestBtn').addEventListener('click', async () => {
+//     try {
+//       const res = await fetch('/api/quiz/public');
+//       if (!res.ok) throw new Error('Failed to load public quizzes');
+  
+//       const data = await res.json();
+//       guestQuizData = data.questions; 
+//       currentQuestionIndex = 0;
+//       userAnswers = [];
+  
+//       if (guestQuizData.length === 0) {
+//         alert('No public quizzes available.');
+//         return;
+//       }
+  
+//       // Use the same render function
+//       fetchGuestQuestion();
+  
+//     } catch (err) {
+//       console.error('Guest access error:', err);
+//       alert('Something went wrong. Check console.');
+//     }
+//   });
+  
+// });
+
+
+// function fetchGuestQuestion() {
+//   const questionContainer = document.getElementById('question-container');
+//   const questionData = guestQuizData[currentQuestionIndex];
+
+//   // Clear previous
+//   questionContainer.textContent = '';
+
+//   if (!questionData) {
+//     questionContainer.textContent = 'No questions available.';
+//     return;
+//   }
+
+//   const fieldset = document.createElement('fieldset');
+//   fieldset.className = 'quiz-class';
+
+//   const legend = document.createElement('legend');
+//   legend.className = 'quiz-question';
+//   legend.textContent = questionData.question;
+//   fieldset.appendChild(legend);
+
+//   const optionsWrapper = document.createElement('div');
+//   optionsWrapper.className = 'quiz-radio-text';
+
+//   questionData.options.forEach((option, idx) => {
+//     const optionWrapper = document.createElement('div');
+//     optionWrapper.className = 'option-wrapper';
+
+//     const input = document.createElement('input');
+//     input.type = 'radio';
+//     input.name = 'answer';
+//     input.id = `option-${idx}`;
+//     input.value = option;
+
+//     const label = document.createElement('label');
+//     label.htmlFor = input.id;
+//     label.textContent = option;
+
+//     optionWrapper.appendChild(input);
+//     optionWrapper.appendChild(label);
+//     optionsWrapper.appendChild(optionWrapper);
+//   });
+
+//   fieldset.appendChild(optionsWrapper);
+//   questionContainer.appendChild(fieldset);
+
+//   const nextBtn = document.getElementById('next-btn');
+//   const submitBtn = document.getElementById('submit-btn');
+
+//   nextBtn.disabled = true;
+//   submitBtn.disabled = true;
+
+//   if (currentQuestionIndex === guestQuizData.length - 1) {
+//     nextBtn.style.display = 'none';
+//     submitBtn.style.display = 'inline-block';
+//   } else {
+//     nextBtn.style.display = 'inline-block';
+//     submitBtn.style.display = 'none';
+//   }
+
+//   // Restore saved answer
+//   const savedAnswer = userAnswers[currentQuestionIndex];
+//   if (savedAnswer) {
+//     const radio = document.querySelector(`input[value="${savedAnswer}"]`);
+//     if (radio) radio.checked = true;
+//     nextBtn.disabled = false;
+//     submitBtn.disabled = false;
+//   }
+
+//   document.querySelectorAll('input[name="answer"]').forEach(radio => {
+//     radio.addEventListener('change', () => {
+//       userAnswers[currentQuestionIndex] = radio.value;
+//       if (currentQuestionIndex === guestQuizData.length - 1) {
+//         submitBtn.disabled = false;
+//       } else {
+//         nextBtn.disabled = false;
+//       }
+//     });
+//   });
+// }
 

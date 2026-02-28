@@ -118,12 +118,11 @@ app.get('/forgot-password', (req, res) => {
   const filePath = path.join(__dirname, 'views', 'forgot-password.html');
   htmlIndexAdminAdminsigninup(res, filePath);
 });
-app.get('/reset-password', (req, res) => {
+app.get('/reset-password/:token', (req, res) => {
   // res.sendFile(path.join(__dirname, 'views', 'reset-password.html'));
   const filePath = path.join(__dirname, 'views', 'reset-password.html');
   htmlIndexAdminAdminsigninup(res, filePath);
 });
-
 
 // Helper function
 function htmlIndexAdminAdminsigninup(res, filePath) {

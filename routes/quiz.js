@@ -12,8 +12,8 @@ router.get('/', authenToken, async (req, res) => {
     const questions = await Question
       .find()
       .select('-answer')
-      .limit(10); // Example questions set limit
-    const quizNonce = res.locals.nonce; //from app.js csp
+      .limit(10); 
+    const quizNonce = res.locals.nonce; 
 
     const questionsEachNonce = questions.map(que => ({
       ...que.toObject(),
@@ -22,13 +22,11 @@ router.get('/', authenToken, async (req, res) => {
                     .digest('base64')
     }));
     res.json(questionsEachNonce);
-    // Prefix _err and might be use later
   } catch {
     res.status(500).json({ message: 'Error fetching questions' });
   }
 });
 
-// When users submit quiz results
 router.post('/submit', authenToken, async (req, res) => {
   const { answers, timeTaken, username } = req.body;
 
@@ -50,10 +48,9 @@ router.post('/submit', authenToken, async (req, res) => {
     const totalQuestions = answers.length;
     const isPassed = score >= 6;
 
-    // Save result
     const newResult = new Result({
-      userId: req.user.userId,           // <-- must come from authenToken
-      username: username || 'Anonymous', // use modal username if passed
+      userId: req.user.userId,           
+      username: username || 'Anonymous',
       score,
       total: totalQuestions,
       timeSpent: timeTaken,
@@ -77,13 +74,10 @@ router.post('/submit', authenToken, async (req, res) => {
 
 router.get('/users', authenToken, async (req, res) => {
   try {
-    // console.log('req.cookies:', req.cookies);  // is the token there?
-    // console.log('req.user:', req.user);
+    
     const user = await User.findById(req.user.userId);
-    // console.log('user:', user);
 
     if (!user) return res.status(404).json({ message: 'User not found' });
-     // check that role is user or admin
       if (req.user.role !== 'user' && req.user.role !== 'admin') {
         return res.status(403).json({ message: 'Forbidden: role not allowed' });
       }
@@ -93,7 +87,6 @@ router.get('/users', authenToken, async (req, res) => {
        role: req.user.role
       });
   } catch {
-    // console.error('Error in /users:', err);
     res.status(500).json({ message: 'Server error' });
   }
 });
@@ -111,9 +104,9 @@ router.post('/results', authenToken, async (req, res) => {
 
   try {
     const updatedResult = await Result.findOneAndUpdate(
-      { userId: req.user.userId }, // only existing results
-      { username },                // update username
-      { sort: { date: -1 }, new: true } // latest attempt
+      { userId: req.user.userId }, 
+      { username },                
+      { sort: { date: -1 }, new: true } 
     );
 
     if (!updatedResult) {

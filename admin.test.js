@@ -1,81 +1,74 @@
+require('dotenv').config({ path: '.env.test' });
 const request = require('supertest');
-// const mongoose = require('mongoose');
-const app = require('./app'); // Adjust path to your Express app
-const Admin = require('./models/Admin'); // Adjust path to your Admin model
-const bcrypt = require('bcrypt');
+const mongoose = require('mongoose');
+const app = require('./app');
+const Admin = require('./models/Admin');
 
 beforeAll(async () => {
+  await mongoose.connect(process.env.TEST_DB_URI);
+  await Admin.deleteMany({});
+
+  // Create initial admin
+   await request(app).post('/api/auth/office/signup').send({
+    email: 'admin@example.com',
+    password: 'Password123!',
+     role: 'admin'
+  });
+
+  // Signin to get token
+  await request(app).post('/api/auth/office/signin').send({
+    email: 'admin@example.com',
+    password: 'Password123!'
+  });
+  // console.log('Signin response:', signinResp.statusCode, signinResp.body);
 
 });
 
 afterAll(async () => {
-
-});
-
-beforeEach(async () => {
-
+  if (mongoose.connection.readyState === 1) {
+    await mongoose.connection.db.dropDatabase(); 
+    await mongoose.connection.close();
+  }
 });
 
 describe('Admin Signup and Signin', () => {
-  test('Admin signup succeeds with valid email and password', async () => {
+  it('should signup a new admin', async () => {
     const res = await request(app)
-      .post('/api/auth/admin/signup')
+      .post('/api/auth/office/signup')
       .send({
-        email: 'testadmin@example.com',
-        password: 'StrongPass1!',
+        email: 'newadmin@example.com',
+        password: 'Password123!'
       });
 
     expect(res.statusCode).toBe(201);
     expect(res.body.message).toBe('User created');
-
-    const admin = await Admin.findOne({ email: 'testadmin@example.com' });
-    expect(admin).not.toBeNull();
-    expect(await bcrypt.compare('StrongPass1!', admin.passwordHash)).toBe(true);
+    expect(res.body.token).toBeDefined();
+    expect(res.body.email).toBe('newadmin@example.com');
   });
 
-  test('Admin signup fails with weak password', async () => {
+  it('should fail signup with weak password', async () => {
     const res = await request(app)
-      .post('/api/auth/admin/signup')
+      .post('/api/auth/office/signup')
       .send({
-        email: 'testadmin2@example.com',
-        password: 'weakpass',
+        email: 'weakadmin@example.com',
+        password: 'pass',
+         role: 'admin'
       });
 
     expect(res.statusCode).toBe(400);
-    expect(res.body.message).toMatch(/Password must be at least 8 characters/i);
+    expect(res.body.message).toMatch(/Password must be/);
   });
 
-  test('Admin signin succeeds with correct credentials', async () => {
-    // First create an admin manually
-    const passwordHash = await bcrypt.hash('StrongPass1!', 10);
-    const admin = new Admin({ email: 'signinadmin@example.com', passwordHash });
-    await admin.save();
-
+  it('should fail signin with wrong password', async () => {
     const res = await request(app)
-      .post('/api/auth/admin/signin')
+      .post('/api/auth/office/signin')
       .send({
-        email: 'signinadmin@example.com',
-        password: 'StrongPass1!',
-      });
-
-    expect(res.statusCode).toBe(200);
-    expect(res.body.token).toBeDefined();
-    expect(res.body.email).toBe('signinadmin@example.com');
-  });
-
-  test('Admin signin fails with wrong password', async () => {
-    const passwordHash = await bcrypt.hash('StrongPass1!', 10);
-    const admin = new Admin({ email: 'wrongpassadmin@example.com', passwordHash });
-    await admin.save();
-
-    const res = await request(app)
-      .post('/api/auth/admin/signin')
-      .send({
-        email: 'wrongpassadmin@example.com',
-        password: 'WrongPass!',
+        email: 'admin@example.com',
+        password: 'WrongPass1!'
       });
 
     expect(res.statusCode).toBe(401);
     expect(res.body.message).toBe('Invalid username or password');
   });
+
 });

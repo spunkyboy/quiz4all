@@ -1,31 +1,22 @@
 // utils/sendEmail.js
 const nodemailer = require('nodemailer');
 
-/**
- * Send email
- * @param {string} to - recipient email
- * @param {string} subject - email subject
- * @param {string} text - plain text content
- * @param {string} [html] - optional HTML content
- */
-const sendEmailReq = async (to, subject, text, html) => {
+async function sendEmailReq({ to, subject, html }) {
+      
   const transporter = nodemailer.createTransport({
-    host: "smtp.sendgrid.net",
-    port: 587,
+    service: 'gmail',
     auth: {
-      user: process.env.SENDGRID_USER, // usually "apikey"
-      pass: process.env.SENDGRID_PASS, // your SendGrid API key
-    },
+      user: process.env.GMAIL_USER, 
+      pass: process.env.GMAIL_PASS  
+    }
   });
 
   await transporter.sendMail({
-    from: `"Quiz App" <${process.env.EMAIL_USER}>`,
+    from: process.env.GMAIL_USER,
     to,
     subject,
-    text,
-    html, // optional, if provided will render as HTML
+    html
   });
-};
+}
 
 module.exports = sendEmailReq;
-// Export to auth.js and sendVerificationEmail.js

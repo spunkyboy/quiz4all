@@ -1,19 +1,37 @@
 const mongoose = require('mongoose');
 
-const UserSchema = new mongoose.Schema({
-  username: { type: String, unique: true }, 
-  email: { type: String, required: true, unique: true, lowercase: true },
-  passwordHash: { type: String, required: true },
-  role: { type: String, default: 'user' },
+const UserSchema = new mongoose.Schema(
+  {
+    username: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true
+    },
 
-  // Email verification fields
-  isVerified: { type: Boolean, default: false }, // Has the user verified their email?
-  verificationToken: String,                     // Random token for verification link
-  verificationTokenExpires: Date,                // Expiry time for token
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      lowercase: true,
+      trim: true
+    },
 
-  // Password reset fields
-  resetPasswordToken: String,
-  resetPasswordExpire: Date
-});
+    passwordHash: {
+      type: String,
+      required: true
+    },
+
+    role: {
+      type: String,
+      default: 'user'
+    },
+
+    // Optional: keep password reset for later use
+    resetPasswordToken: String,
+    resetPasswordExpire: Date
+  },
+  { timestamps: true }
+);
 
 module.exports = mongoose.model('User', UserSchema);

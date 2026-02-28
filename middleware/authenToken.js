@@ -1,7 +1,8 @@
 const jwt = require('jsonwebtoken');
 
 const authenToken = (req, res, next) => {
-  const token = req.cookies?.token;
+  // Check cookie first, then Authorization header
+  const token = req.cookies?.token || req.headers['authorization']?.split(' ')[1];
 
   if (!token) {
     return res.status(401).json({ message: 'Unauthorized: Token not found' });
@@ -27,5 +28,6 @@ const authenToken = (req, res, next) => {
     return res.status(403).json({ message: 'Forbidden: Invalid token' });
   }
 };
+
 
 module.exports = authenToken;

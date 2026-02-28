@@ -1,11 +1,9 @@
-
 const express = require('express');
 const router = express.Router();
 const Question = require('../models/Question');
 const authenToken = require('../middleware/authenToken')
 const isAdminProtected = require('../middleware/usersAdmin');
 
-// Create a new question (admin only)
 router.post('/', authenToken, isAdminProtected, async (req, res) => {
   try {
       // Only allow admins
@@ -19,8 +17,7 @@ router.post('/', authenToken, isAdminProtected, async (req, res) => {
         message: 'Please provide question, options, and answer.'
       });
     }
-// Quiz count
-    const quizCount = await Question.countDocuments();
+  const quizCount = await Question.countDocuments();
     if (quizCount >= 10) {
       return res.status(400).json({
         message: 'Quiz limit reached (10). Delete a quiz to add a new one.'
@@ -56,7 +53,7 @@ router.post('/', authenToken, isAdminProtected, async (req, res) => {
   }
 });
 
-// DELETE a question by ID (admin only)
+
 router.delete('/:id', authenToken, isAdminProtected, async (req, res) => {
   const { id } = req.params;
   try {
@@ -74,9 +71,8 @@ router.delete('/:id', authenToken, isAdminProtected, async (req, res) => {
 // GET all questions (admin only)
 router.get('/', authenToken, isAdminProtected, async (req, res) => {
   // console.log('ADMIN ACCESS GRANTED:', req.user);
-
   try {
-    const questions = await Question.find(); // includes answers
+    const questions = await Question.find(); 
     res.json({ success: true, data: questions });
   } catch (error) {
     console.error('Error fetching questions:', error.message);
@@ -84,7 +80,6 @@ router.get('/', authenToken, isAdminProtected, async (req, res) => {
   }
 });
 
-// GET questions count (admin only)
 router.get('/count', authenToken, isAdminProtected, async (req, res) => {
   try {
     const countUpDown = await Question.countDocuments();

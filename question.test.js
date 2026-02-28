@@ -1,65 +1,95 @@
-require('dotenv').config({ path: '.env.test' });
+// question.test.js
 const request = require('supertest');
-const app = require('./app'); // Your Express app
+const app = require('./app');
+const Question = require('./models/Question'); // adjust the path if needednpm e
+let adminToken;
 
-//it get it process.env.TEST_DB_URI from jest.setup.js
+// Helper: create an admin and get token
 beforeAll(async () => {
+  const email = `admin${Date.now()}@example.com`;
+  const password = 'AdminPass123!';
+
+  // Signup admin
+  await request(app).post('/api/auth/office/signup').send({
+    email,
+    password,
+    role: 'admin'
+  });
+
+  // Signin admin to get token
+  const responSignin = await request(app).post('/api/auth/office/signin').send({ email, password });
+  // console.log('SIGNIN RESPONSE:', res.body); // 👈 ADD THIS
+  adminToken =  responSignin.body.token;
+// Added a sample question
+  await Question.create({
+    question: 'What is the capital of France?',
+    options: ['Paris', 'London', 'Berlin', 'Rome'],
+    answer: 'Paris'
+  });
+  // console.log('ADMIN TOKEN:', adminToken); // 👈 AND THIS
 });
 
-afterAll(async () => {
-});
-
-describe('POST /api/questions', () => {
+describe('Question API', () => {
   it('should create a new question', async () => {
-    const response = await request(app)
+    const res = await request(app)
       .post('/api/questions')
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send({
+        question: 'What is the capital of Spain?',
+        options: ['Madrid', 'Barcelona', 'Valencia'],
+        answer: 'Madrid'
+      });
+
+    expect(res.status).toBe(201);
+    expect(res.body.question.question).toBe('What is the capital of Spain?');
+    expect(res.body.question.options.length).toBe(3);
+  });
+
+  it('should fail if answer is not in options', async () => {
+    const res = await request(app)
+      .post('/api/questions')
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send({
+        question: 'What is 2 + 2?',
+        options: ['3', '5'],
+        answer: '4'
+      });
+    expect(res.status).toBe(400);
+    expect(res.body.message).toMatch(/Answer must be one of the options/);
+  });
+
+  it('should return 400 if question is missing', async () => {
+    const res = await request(app)
+      .post('/api/questions')
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send({
+        options: ['Paris', 'Berlin', 'Madrid'],
+        answer: 'Paris'
+      });
+
+    expect(res.status).toBe(400);
+    expect(res.body.message).toBe('Please provide question, options, and answer.');
+  });
+
+  it('should fetch all questions', async () => {
+    // First create a question
+    await request(app)
+      .post('/api/questions')
+      .set('Authorization', `Bearer ${adminToken}`)
       .send({
         question: 'What is the capital of France?',
         options: ['Paris', 'Berlin', 'Madrid'],
         answer: 'Paris'
       });
 
-    expect(response.status).toBe(201);
-    expect(response.body.question.question).toBe('What is the capital of France?');
-    expect(response.body.question.options.length).toBe(3);
-  });
-
-  it('should fail if answer is not in options', async () => {
-    const response = await request(app)
-      .post('/api/questions')
-      .send({
-        question: 'What is 2 + 2?',
-        options: ['3', '5'],
-        answer: '4'
-      });
-
-    expect(response.status).toBe(400);
-    expect(response.body.message).toMatch(/Answer must be one of the options/);
-  });
-});
-
-describe('POST /api/question', () =>{
-    it('should return 400 if question is missing', async () => {
-     const response = await request(app)
-     .post('/api/questions')
-     .send({
-        options: ['Paris', 'Berlin', 'Madrid'],
-        answer: 'Paris'
-     });
-     expect(response.statusCode).toBe(400);
-     expect(response.body.message).toBe('Please provide question, options, and answer.');
-
-    });
-});
-
-//Get endpoint returns a list of questions
-describe('POST /api/question', () =>{
-    it('should fetch all questions', async () => {
-     const response = await request(app)
-     .get('/api/questions')
+      const res = await request(app)
+      .get('/api/questions') 
+      .set('Authorization', `Bearer ${adminToken}`);
     
-     expect(response.statusCode).toBe(200);
-     expect(Array.isArray(response.body)).toBe(true);
-
-    });
+    expect(res.status).toBe(200);
+    expect(res.body.success).toBe(true);
+    expect(Array.isArray(res.body.data)).toBe(true);
+    expect(res.body.data.length).toBe(1);
+    expect(res.body.data[0].question).toBe('What is the capital of France?');
+  });
 });

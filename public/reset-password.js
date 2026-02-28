@@ -1,8 +1,8 @@
     // Get token from URL
     document.addEventListener("DOMContentLoaded", () => {
       // Get token from URL
-      const token = new URLSearchParams(window.location.search).get("token");
-     
+      const token = window.location.pathname.split('/').pop();
+      console.log(token, 'token kiss')
       document.getElementById("tokenInput").value = token;
     
       // Submit form
@@ -10,18 +10,33 @@
         e.preventDefault();
         const password = document.getElementById("password").value;
         const confirmPassword = document.getElementById("confirmPassword").value;
-    
+        const spinner = document.getElementById("spinner");
+        const message = document.getElementById("message");
+         // Show spinner
+        spinner.style.display = "block";
+        message.innerText = "";
+        
         try {
-          const res = await fetch("/api/auth/reset-password", {
+          const res = await fetch(`/api/auth/reset-password/${token}`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ token, password, confirmPassword }) // token is now defined
+            body: JSON.stringify({ password, confirmPassword }) 
           });
-          const text = await res.text();
-          alert(text);
+          const dataReset = await res.json();
+
+          if (!res.ok) {
+            throw new Error(dataReset.message || "Reset failed");
+          }
+    
+          message.style.color = "green";
+          message.innerText = dataReset.message || "Password reset successful";
+    
         } catch (err) {
-          console.error(err);
-          alert("Error resetting password");
+          message.style.color = "red";
+          message.innerText = err.message || "Error resetting password";
+        } finally {
+          // Hide spinner
+          spinner.style.display = "none";
         }
       });
     });
