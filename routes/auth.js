@@ -334,7 +334,7 @@ router.post("/forgot-password", async (req, res) => {
       });
 
     } catch (emailErr) {
-      console.error("Email sending failed:", emailErr.message);
+      console.error("Email sending failed:", emailErr);
       console.log("User found for password reset:", user);
       console.log("User email:", user?.email);
     }

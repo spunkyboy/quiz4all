@@ -9,14 +9,11 @@ form.addEventListener('submit', async (e) => {
 
   try {
     // Wait for both fetch and countdown to finish
-    const [resp] = await Promise.all([
-      fetch('/api/auth/forgot-password', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email })
-      }),
-      new Promise((r) => setTimeout(r, 5000))
-    ]);
+    const resp = await fetch('/api/auth/forgot-password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
 
     const textResponse = await resp.text();
     if (!resp.ok) {
