@@ -321,6 +321,7 @@ router.post("/forgot-password", async (req, res) => {
 
     // Send email (Gmail / Nodemailer)
     try {
+      console.log("🚀 About to send email...");
       sendEmailReq({
         to: user.email,
         subject: "Password Reset",

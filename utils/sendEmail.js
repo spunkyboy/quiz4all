@@ -2,6 +2,7 @@ const nodemailer = require('nodemailer');
 
 async function sendEmailReq({ to, subject, html }) {
   try {
+    console.log("📧 sendEmailReq function triggered");
     console.log("Attempting to send email to:", to);
 
     const transporter = nodemailer.createTransport({
