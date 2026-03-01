@@ -439,7 +439,7 @@ document.getElementById('signup-form').addEventListener('submit', async function
     if (response.ok) {
       signupPrompt.style.color = 'green';
       signupPrompt.textContent =
-        'Signup successful! Please check your email to verify your account.';
+        'Signup successful!';
       this.reset();
     } else {
       signupPrompt.style.color = '#e7903c';

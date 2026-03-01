@@ -118,7 +118,7 @@ if (!jwtSecret) {
           maxAge: 8 * 60 * 60 * 1000, 
           path: '/'
         });
-        
+
       res.json({ token, email: adminSign.email, role:adminSign.role});
   } catch (err) {
     console.error('Server error:', err);
@@ -251,7 +251,7 @@ router.post('/signin', ...signinMiddleWares, async (req, res) => {
     if (!isMatch) return res.status(401).json({ message: 'Invalid credentials' });
 
     if (!jwtSecret) {
-      console.error('❌ JWT_SECRET is missing');
+      console.error('JWT_SECRET is missing');
       return res.status(500).json({ message: 'Server misconfiguration' });
     }
 
