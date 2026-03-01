@@ -1,4 +1,3 @@
-// utils/sendEmail.js
 const nodemailer = require('nodemailer');
 
 async function sendEmailReq({ to, subject, html }) {
@@ -18,10 +17,12 @@ async function sendEmailReq({ to, subject, html }) {
       html
     });
 
-    console.log("EMAIL SENT:", info.response);
+    console.log(" Email sent:", info.response);
+    return info;
 
-  } catch (error) {
-    console.error("EMAIL ERROR:", error);
+  } catch (err) {
+    console.error("EMAIL ERROR:", err);
+    throw err;
   }
 }
 
