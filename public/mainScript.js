@@ -363,23 +363,12 @@ document.getElementById('signin-form').addEventListener('submit', async function
 
 async function loadUser() {
   try {
-    const token = localStorage.getItem("token");
-
-    if (!token) {
-      document.getElementById("greet-message").innerText =
-        "You are not logged in.";
-      return;
-    }
-
     const res = await fetch('/api/quiz/users', {
       method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
+      credentials: 'include' 
     });
 
     if (res.status === 401) {
-      localStorage.removeItem("token");
       document.getElementById("greet-message").innerText =
         "Session expired. Please log in again.";
       return;
@@ -400,7 +389,6 @@ async function loadUser() {
       "Something went wrong.";
   }
 }
-
 //signup for Users
 document.getElementById('signup-form').addEventListener('submit', async function (event) {
   event.preventDefault();
