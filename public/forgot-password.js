@@ -8,7 +8,7 @@ form.addEventListener('submit', async (e) => {
   const email = new FormData(form).get('email');
 
   try {
-    const resp = await fetch('/api/auth/forgot-password', {
+    const resp = await fetch('https://quiz4all-ygm1.onrender.com/api/auth/forgot-password', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email })
