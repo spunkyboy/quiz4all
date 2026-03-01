@@ -17,7 +17,7 @@ async function sendEmailReq({ to, subject, html }) {
       html
     });
 
-    console.log(" Email sent:", info.response);
+    // console.log(" Email sent:", info.response);
     return info;
 
   } catch (err) {

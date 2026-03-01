@@ -5,6 +5,8 @@ const path = require('path');
 const helmet = require('helmet');
 const crypto = require("crypto");
 const fs = require('fs');
+const cors = require('cors');
+
 
 // Routes
 const authRoutes = require('./routes/auth');
@@ -23,6 +25,14 @@ app.use((req, res, next) => {
   next();
 });
 
+const allowedOrigins = process.env.NODE_ENV === 'production'
+  ? ['https://quiz4all-ygm1.onrender.com'] 
+  : ['http://localhost:5001', 'https://quiz4all-ygm1.onrender.com']; 
+
+app.use(cors({
+  origin: allowedOrigins,
+  methods: ['GET', 'POST', 'PUT', 'DELETE']
+}));
 //Applied Helmet with CSP
 app.use(
   helmet.contentSecurityPolicy({
@@ -43,7 +53,9 @@ app.use(
       connectSrc: [
         "'self'",
         "https://unpkg.com",
-        "https://ka-f.fontawesome.com"
+        "https://ka-f.fontawesome.com",
+        "https://quiz4all-ygm1.onrender.com" 
+
       ],
       requireTrustedTypesFor: ["'script'"],
 
@@ -85,9 +97,9 @@ app.use(
 //   }
 // }));
 app.use(express.static(path.join(__dirname, 'public'), {
-  maxAge: 0,           // disable browser caching
-  etag: false,         // disable etag
-  lastModified: false, // disable lastModified
+  maxAge: 0,          
+  etag: false,         
+  lastModified: false,
   setHeaders: (res) => {
     // Optional: make absolutely sure browser does not cache
     res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
