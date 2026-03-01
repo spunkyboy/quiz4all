@@ -347,8 +347,6 @@ router.post("/forgot-password", async (req, res) => {
   }
 });
 
-
-
 // Reset password
 router.post("/reset-password/:token", async (req, res) => {
   try {
