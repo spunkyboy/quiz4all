@@ -8,7 +8,6 @@ form.addEventListener('submit', async (e) => {
   const email = new FormData(form).get('email');
 
   try {
-    // Wait for both fetch and countdown to finish
     const resp = await fetch('/api/auth/forgot-password', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -17,11 +16,11 @@ form.addEventListener('submit', async (e) => {
 
     const textResponse = await resp.text();
     if (!resp.ok) {
-      throw new Error( textResponse || 'Request failed');
+      throw new Error(textResponse || 'Request failed');
     }
     messageOutput.innerText = textResponse;
   } catch (err) {
     messageOutput.innerText = 'Error sending email';
     console.error(err);
-  } 
+  }
 });
