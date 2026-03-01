@@ -10,7 +10,7 @@ async function startServer() {
 
     console.log('Connected to MongoDB');
     console.log('Database name in use:', mongoose.connection.name);
-
+    console.log('MONGO_URI value:', process.env.MONGO_URI);
     app.listen(PORT, () => {
       console.log(`Server running on localhost: ${PORT}`);
     });
