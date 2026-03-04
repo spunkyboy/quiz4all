@@ -1,32 +1,37 @@
-const nodemailer = require('nodemailer');
+const Mailgun = require("mailgun.js");
+const formData = require("form-data");
 
-async function sendEmailReq({ to, subject, html }) {
-  try {
-    console.log("📧 sendEmailReq function triggered");
-    console.log("Attempting to send email to:", to);
+const sendEmailReq = async ({ to, subject, html }) => {
 
-    const transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: 465,
-      secure: true,
-      auth: {
-        user: process.env.GMAIL_USER,
-        pass: process.env.GMAIL_PASS
+  // ✅ ADD CHECK HERE
+  if (process.env.NODE_ENV === 'test' || !process.env.MAILGUN_API_KEY) {
+    console.log('🧪 Skipping email (no API key or test mode)');
+    return;
   }
-    });
 
-    const info = await transporter.sendMail({
-      from: process.env.GMAIL_USER,
+  const mailgun = new Mailgun(formData);
+
+  const mailQuiz = mailgun.client({
+    username: "api",
+    key: process.env.MAILGUN_API_KEY,
+    url: 'https://api.mailgun.net'
+  });
+
+  try {
+    console.log('API KEY:', process.env.MAILGUN_API_KEY);
+    console.log('DOMAIN:', process.env.MAILGUN_DOMAIN);
+
+    const result = await mailQuiz.messages.create(process.env.MAILGUN_DOMAIN, {
+      from: `Quiz App <mailgun@${process.env.MAILGUN_DOMAIN}>`,
       to,
       subject,
-      html
+      html,
     });
 
-    console.log("✅ Email sent:", info.response);
-
-  } catch (err) {
-    console.error("❌ Email error FULL:", err);
+    console.log("Mailgun response:", result);
+  } catch (error) {
+    console.error("Mailgun error:", error);
   }
-}
+};
 
 module.exports = sendEmailReq;

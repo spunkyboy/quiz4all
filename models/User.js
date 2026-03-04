@@ -26,8 +26,6 @@ const UserSchema = new mongoose.Schema(
       type: String,
       default: 'user'
     },
-
-    // Optional: keep password reset for later use
     resetPasswordToken: String,
     resetPasswordExpire: Date
   },
