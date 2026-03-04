@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 
 const authenToken = (req, res, next) => {
-  // Check cookie first, then Authorization header
+  
   const token = req.cookies?.token || req.headers['authorization']?.split(' ')[1];
 
   if (!token) {
@@ -11,7 +11,6 @@ const authenToken = (req, res, next) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    // keep the full payload
     req.user = {
       userId: decoded.userId || decoded.id || decoded._id,
       email: decoded.email,

@@ -35,7 +35,7 @@ router.post('/submit', authenToken, async (req, res) => {
   }
 
   try {
-    // Calculate score
+
     const questionIds = answers.map(a => a.id);
     const questions = await Question.find({ _id: { $in: questionIds } });
     let score = 0;
@@ -72,6 +72,7 @@ router.post('/submit', authenToken, async (req, res) => {
   }
 });
 
+
 router.get('/users', authenToken, async (req, res) => {
   try {
     
@@ -90,6 +91,7 @@ router.get('/users', authenToken, async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 });
+
 
 router.post('/results', authenToken, async (req, res) => {
   const { username } = req.body;
@@ -119,5 +121,6 @@ router.post('/results', authenToken, async (req, res) => {
     res.status(500).json({ message: 'Error saving username', error: err.message });
   }
 });
+
 
 module.exports =  router;

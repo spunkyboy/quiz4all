@@ -18,17 +18,17 @@ const sendEmailReq = async ({ to, subject, html }) => {
   });
 
   try {
-    console.log('API KEY:', process.env.MAILGUN_API_KEY);
-    console.log('DOMAIN:', process.env.MAILGUN_DOMAIN);
+    // console.log('API KEY:', process.env.MAILGUN_API_KEY);
+    // console.log('DOMAIN:', process.env.MAILGUN_DOMAIN);
 
-    const result = await mailQuiz.messages.create(process.env.MAILGUN_DOMAIN, {
+    await mailQuiz.messages.create(process.env.MAILGUN_DOMAIN, {
       from: `Quiz App <mailgun@${process.env.MAILGUN_DOMAIN}>`,
       to,
       subject,
       html,
     });
 
-    console.log("Mailgun response:", result);
+    // console.log(`Email sent to ${to}`);
   } catch (error) {
     console.error("Mailgun error:", error);
   }

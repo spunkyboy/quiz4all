@@ -11,6 +11,7 @@ function validationsResutl({username, score, total}){
 }
 
 router.post('/', async (req, res) => {
+  
   const { username, score, total, timeSpent, isPassed } = req.body;
 
   const validateError = validationsResutl({

@@ -28,7 +28,6 @@ const siginLimiter = rateLimit({
   }
 });
 
-// Only apply the rate limiter if you’re NOT running tests.
 const signinMiddleWares = [];
 if (process.env.NODE_ENV !== 'test') {
   signinMiddleWares.push(siginLimiter);
@@ -128,24 +127,26 @@ if (!jwtSecret) {
 
 //admin logout
 router.post('/office/logout', (req, res) => {
+
   console.log('🚪 Logout Admin called');
 
   res.clearCookie('token', {
     httpOnly: true,
-    secure: true,     // Must match the cookie options set during signin
+    secure: true,     
     sameSite: 'None',
     path: '/', 
   });
 
   res.status(200).json({ message: 'Logged out' });
+
 });
 
 // Users Signup
 router.post('/signup', async (req, res) => {
+
   const { email, password } = req.body;
   const normalizedEmail = email?.toLowerCase();
 
-  // Required fields
   if (!email || !password) {
     return res.status(400).json({
       success: false,
@@ -153,7 +154,6 @@ router.post('/signup', async (req, res) => {
     });
   }
 
-  // Email format
   if (!inputValidator.isEmail(normalizedEmail)) {
     return res.status(400).json({
       success: false,
@@ -161,23 +161,25 @@ router.post('/signup', async (req, res) => {
     });
   }
 
-  // Strong password
   if (!inputValidator.isStrongPassword(password, {
     minLength: 8,
     minLowercase: 1,
     minUppercase: 1,
     minNumbers: 1,
     minSymbols: 1
-  })) {
-    return res.status(400).json({
-      success: false,
-      message: 'Password must include uppercase, lowercase, number, and symbol'
-    });
-  }
+  })) 
+
+    {
+      return res.status(400).json({
+        success: false,
+        message: 'Password must include uppercase, lowercase, number, and symbol'
+      });
+    }
 
   try {
-    // Email already exists
+
     const existingUser = await User.findOne({ email: normalizedEmail });
+
     if (existingUser) {
       return res.status(400).json({
         success: false,
@@ -185,7 +187,6 @@ router.post('/signup', async (req, res) => {
       });
     }
 
-    // Generate UNIQUE username
     const baseUsername = normalizedEmail.split('@')[0];
     let username = baseUsername;
     let counter = 1;
@@ -195,7 +196,6 @@ router.post('/signup', async (req, res) => {
       counter++;
     }
 
-    // Create user
     const passwordHash = await bcrypt.hash(password, 10);
 
     const newUser = new User({
@@ -214,7 +214,6 @@ router.post('/signup', async (req, res) => {
   } catch (err) {
     console.error('SIGNUP ERROR 👉', err);
 
-    // Duplicate key fallback
     if (err.code === 11000) {
       return res.status(400).json({
         success: false,
@@ -232,6 +231,7 @@ router.post('/signup', async (req, res) => {
 
 // User Signin
 router.post('/signin', ...signinMiddleWares, async (req, res) => {
+
   const { email, password } = req.body;
 
   if (!email || !password) {
@@ -270,13 +270,14 @@ router.post('/signin', ...signinMiddleWares, async (req, res) => {
     });
 
     return res.status(200).json({ token, email: user.email, role: user.role });
+
   } catch (err) {
     console.error('Signin error:', err);
     return res.status(500).json({ message: 'Server error' });
   }
 });
 
-// Users logout out (clear the cookies)
+// Users logout 
 router.post('/logout', (req, res) => {
   console.log('🚪 Logout Users called');
 
@@ -284,7 +285,7 @@ router.post('/logout', (req, res) => {
   res.status(200).json({ message: 'Logout successful' });
 });
 
-// FORGOT PASSWORD
+// Forgot Password
 router.post("/forgot-password", async (req, res) => {
   try {
     const { email } = req.body;
@@ -294,35 +295,26 @@ router.post("/forgot-password", async (req, res) => {
     }
 
     const normalizedEmail = email.toLowerCase();
-
     const user = await User.findOne({ email: normalizedEmail });
 
-    // Always respond the same (security best practice)
     if (!user) {
       return res.status(200).json({
-        message: "If the email exists, a reset link was sent"
+        message: "If the email exists, a reset link has been sent"
       });
     }
 
-    // Generate reset token
     const resetToken = crypto.randomBytes(32).toString("hex");
-
     user.resetPasswordToken = crypto
       .createHash("sha256")
       .update(resetToken)
       .digest("hex");
-
     user.resetPasswordExpire = Date.now() + 30 * 60 * 1000; // 30 minutes
-
     await user.save();
 
-    // Absolute URL (IMPORTANT)
     const resetUrl = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
 
-    // Send email (Gmail / Nodemailer)
     try {
-      console.log("🚀 About to send email...");
-      sendEmailReq({
+      await sendEmailReq({
         to: user.email,
         subject: "Password Reset",
         html: `
@@ -331,16 +323,14 @@ router.post("/forgot-password", async (req, res) => {
           <a href="${resetUrl}">${resetUrl}</a>
           <p>This link expires in 30 minutes.</p>
         `
-        
       });
-
-    } catch (emailErr) {
-      console.error("Email sending failed:", emailErr);
-      console.log("User found for password reset:", user);
-      console.log("User email:", user?.email);
+    } catch {
+      console.error(`Password reset email failed for user ID: ${user._id}`);
     }
 
-    return res.send("If the email exists, a reset link was sent");
+    return res.status(200).json({
+      message: "If the email exists, a reset link has been sent"
+    });
 
   } catch (err) {
     console.error("Forgot password error:", err);
@@ -354,7 +344,6 @@ router.post("/reset-password/:token", async (req, res) => {
     const { password, confirmPassword } = req.body;
     const { token } = req.params;
 
-    //  Required fields
     if (!password || !confirmPassword || !token) {
       return res
         .status(400)
@@ -364,14 +353,12 @@ router.post("/reset-password/:token", async (req, res) => {
     const pwds = password.toString();
     const confirmPwds = confirmPassword.toString();
 
-    // Password length
     if (!inputValidator.isLength(pwds, { min: 8 })) {
       return res
         .status(400)
         .json({ message: "Password must be at least 8 characters long" });
     }
 
-    // Password strength
     if (
       !inputValidator.matches(
         pwds,
@@ -384,18 +371,15 @@ router.post("/reset-password/:token", async (req, res) => {
       });
     }
 
-    //  Passwords match
     if (pwds.trim() !== confirmPwds.trim()) {
       return res.status(400).json({ message: "Passwords do not match" });
     }
 
-    //  Hash token from request
     const hashedToken = crypto
       .createHash("sha256")
       .update(token)
       .digest("hex");
 
-    //  Find valid reset token
     const user = await User.findOne({
       resetPasswordToken: hashedToken,
       resetPasswordExpire: { $gt: Date.now() }
@@ -407,7 +391,6 @@ router.post("/reset-password/:token", async (req, res) => {
         .json({ message: "Invalid or expired token" });
     }
 
-    //  Hash and save new password
     user.passwordHash = await bcrypt.hash(pwds, 10);
     user.resetPasswordToken = undefined;
     user.resetPasswordExpire = undefined;
@@ -423,44 +406,5 @@ router.post("/reset-password/:token", async (req, res) => {
 });
 
 
-// router.post('/guest', async (req, res) => {
-//   try {
-//     // Generate a temporary guest username
-//     const guestId = crypto.randomBytes(4).toString('hex'); // 8-char hex
-//     const username = `Guest_${guestId}`;
-
-//     // Create a guest user (no password, marked as guest)
-//     const guestUser = new User({
-//       username,
-//       email: `${guestId}@guest.local`, // dummy email
-//       passwordHash: crypto.randomBytes(16).toString('hex'), // random hash
-//       role: 'guest',
-//       isVerified: true
-//     });
-
-//     await guestUser.save();
-
-//     // Generate JWT token
-//     const token = jwt.sign(
-//       { id: guestUser._id, role: guestUser.role },
-//       process.env.JWT_SECRET,
-//       { expiresIn: '1d' } // guest token expires in 1 day
-//     );
-
-//     res.json({
-//       success: true,
-//       message: 'Guest login successful',
-//       token,
-//       user: {
-//         id: guestUser._id,
-//         username: guestUser.username,
-//         role: guestUser.role
-//       }
-//     });
-//   } catch (err) {
-//     console.error('Guest login error:', err);
-//     res.status(500).json({ success: false, message: 'Server error' });
-//   }
-// });
 
 module.exports = router;

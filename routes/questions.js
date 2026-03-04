@@ -6,10 +6,10 @@ const isAdminProtected = require('../middleware/usersAdmin');
 
 router.post('/', authenToken, isAdminProtected, async (req, res) => {
   try {
-      // Only allow admins
       if (req.user.role !== 'admin') {
         return res.status(403).json({ message: 'Forbidden: Admins only' });
       }
+
     let { question, options, answer } = req.body;
 
     if (!question || !options || !answer) {
@@ -17,12 +17,14 @@ router.post('/', authenToken, isAdminProtected, async (req, res) => {
         message: 'Please provide question, options, and answer.'
       });
     }
-  const quizCount = await Question.countDocuments();
-    if (quizCount >= 10) {
-      return res.status(400).json({
-        message: 'Quiz limit reached (10). Delete a quiz to add a new one.'
-      });
-    }
+
+   const quizCount = await Question.countDocuments();
+
+      if (quizCount >= 10) {
+        return res.status(400).json({
+          message: 'Quiz limit reached (10). Delete a quiz to add a new one.'
+        });
+      }
 
     if (!Array.isArray(options) || options.length < 2) {
       return res.status(400).json({
@@ -83,17 +85,17 @@ router.get('/', authenToken, isAdminProtected, async (req, res) => {
 router.get('/count', authenToken, isAdminProtected, async (req, res) => {
   try {
     const countUpDown = await Question.countDocuments();
-    res.status(200).json({
-      success: true,
-      countUpDown,
-      limit: 10
-    });
+      res.status(200).json({
+        success: true,
+        countUpDown,
+        limit: 10
+      });
   } catch (error) {
     console.error('Error fetching count:', error.message);
-    res.status(500).json({
-      success: false,
-      message: 'Server error'
-    });
+      res.status(500).json({
+        success: false,
+        message: 'Server error'
+      });
   }
 });
 
