@@ -1,7 +1,8 @@
 let quizData = [];
 let currentQuestionIndex = 0;
 let userAnswers = [];
-let startTime; // Variable to store the start time of the quiz
+let startTime; 
+
 function showSignIn() {
     document.getElementById('signin-heading').classList.add('active');
     document.getElementById('signup-heading').classList.remove('active');
@@ -29,12 +30,11 @@ function showQuizPage() {
     document.getElementById('signin-heading').classList.remove('active');
     document.getElementById('signup-heading').classList.remove('active');
     document.getElementById('result-page').classList.remove('active');
+
     fetchQuestion();
-      //Record the start time when the quiz page is shown
       startTime = new Date().getTime();
 }
 
-// Fetch from Backend (Once It's Connected)
 const quizErrorModal = document.getElementById('quiz-error-modal');
 const quizErrorMessage = document.getElementById('quiz-error-message');
 const closeQuizErrorBtn = document.getElementById('close-quiz-error-btn');
@@ -46,7 +46,7 @@ closeQuizErrorBtn.addEventListener('click', () => {
 // Fetch quiz data
 async function fetchQuizDataAndStart() {
   try {
-    // throw new Error('Simulated network error');
+
     const res = await fetch('/api/quiz', {
       method: 'GET',
       credentials: 'include'
@@ -61,18 +61,18 @@ async function fetchQuizDataAndStart() {
       }
 
       quizErrorMessage.textContent = message;
-      quizErrorModal.classList.remove('hidden'); // show modal
+      quizErrorModal.classList.remove('hidden'); 
       return;
     }
 
     const data = await res.json();
     quizData = data.questions || data; 
     shuffleQuestions();
-    showQuizPage(); // load the quiz
+    showQuizPage(); 
 
   } catch (err) {
     quizErrorMessage.textContent = 'Failed to load quiz. Make sure you are logged in.';
-    quizErrorModal.classList.remove('hidden'); // show modal
+    quizErrorModal.classList.remove('hidden'); 
     console.error(err);
   }
 }
@@ -136,7 +136,7 @@ function fetchQuestion() {
   fieldset.appendChild(optionsWrapper);
   questionContainer.appendChild(fieldset);
 
-  //  Button logic
+  
   const nextBtn = document.getElementById('next-btn');
   const submitBtn = document.getElementById('submit-btn');
   const radios = document.querySelectorAll('input[name="answer"]');
@@ -152,7 +152,7 @@ function fetchQuestion() {
     submitBtn.style.display = 'none';
   }
 
-  // Restore saved answer
+  
   const savedAnswer = userAnswers[currentQuestionIndex];
   if (savedAnswer) {
     const radio = document.querySelector(`input[value="${savedAnswer}"]`);
@@ -178,7 +178,7 @@ function fetchQuestion() {
   }
 }
 
-// Request user name
+
 async function requestUsername() {
   return new Promise(resolve => {
     const modal = document.getElementById('username-modal');
@@ -211,7 +211,7 @@ async function requestUsername() {
   });
 }
 
-// Show results 
+
 async function showResultPage() {
   const endTime = Date.now();
   const timeSpentMs = endTime - startTime;
@@ -251,8 +251,8 @@ async function showResultPage() {
 
   // --- DOMPurify + fallback for browsers without Trusted Types ---
   let trustedHTML;
+
   if (window.trustedTypes) {
-    // Create a policy safely
     const policy = window.trustedTypes.createPolicy('dompurify-policy', {
       createHTML: (s) => s
     });
@@ -266,7 +266,6 @@ async function showResultPage() {
 
   resultElement.textContent = trustedHTML;
 
-  // Styling
   resultElement.style.color = isPassed ? '#28a745' : '#ff6347';
   resultElement.style.fontSize = '1.5rem';
   resultElement.style.lineHeight = '2';
@@ -295,11 +294,10 @@ async function showResultPage() {
 }
 document.getElementById('submit-btn').addEventListener('click', showResultPage);
 
-// Function to shuffle the questions array
 function shuffleQuestions() {
     for (let i = quizData.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
-        [quizData[i], quizData[j]] = [quizData[j], quizData[i]]; // Swap
+        [quizData[i], quizData[j]] = [quizData[j], quizData[i]];
     }
 }
 
@@ -308,7 +306,7 @@ const errorMessage = document.getElementById('error-message');
 const closeErrorBtn = document.getElementById('close-error-btn');
 
 closeErrorBtn.addEventListener('click', () => {
-  errorModal.classList.add('hidden'); // hide modal on close
+  errorModal.classList.add('hidden'); 
 });
 
 document.getElementById('signin-form').addEventListener('submit', async function(event) {
@@ -389,7 +387,7 @@ async function loadUser() {
       "Something went wrong.";
   }
 }
-//signup for Users
+
 document.getElementById('signup-form').addEventListener('submit', async function (event) {
   event.preventDefault();
 
@@ -445,9 +443,9 @@ document.getElementById('signup-form').addEventListener('submit', async function
 document.getElementById('password-if').addEventListener('change', function() {
     const passwordField = document.getElementById('signup-password');
     if (this.checked) {
-        passwordField.type = 'text';  // Show the password
+        passwordField.type = 'text';  
     } else {
-        passwordField.type = 'password';  // Hide the password
+        passwordField.type = 'password'; 
     }
 });
 
@@ -455,9 +453,9 @@ document.getElementById('password-if').addEventListener('change', function() {
 document.getElementById('signIn-password-if').addEventListener('change', function() {
     const passwordFieldIn = document.getElementById('signin-password');
     if (this.checked) {
-        passwordFieldIn.type = 'text';  // Show the password
+        passwordFieldIn.type = 'text';  
     } else {
-        passwordFieldIn.type = 'password';  // Hide the password
+        passwordFieldIn.type = 'password'; 
     }
 });
 
@@ -470,7 +468,7 @@ document.getElementById('next-btn').addEventListener('click', function() {
     currentQuestionIndex++;
     if (currentQuestionIndex >= quizData.length) {
         currentQuestionIndex = quizData.length - 1;
-        document.getElementById('next-btn').disabled = true; // Disable Next on last question
+        document.getElementById('next-btn').disabled = true; 
     }
     fetchQuestion();
     document.getElementById('prev-btn').disabled = false;
@@ -491,13 +489,18 @@ document.getElementById('prev-btn').addEventListener('click', function () {
     }
 });
 
-// User logout
+// Track user activity
+window.onload = resetTimer;
+document.onmousemove = resetTimer;
+document.onkeydown = resetTimer;
+document.onclick = resetTimer;
+document.onscroll = resetTimer;
+
 let logoutTimerUser;
-const INACTIVITY_LIMIT = 3 * 60 * 1000; // 3 minutes
+const INACTIVITY_LIMIT = 3 * 60 * 1000; 
 
 /* eslint-disable-next-line no-unused-vars */
 let isAutoLogout = false;
-
 function resetTimer() {
   clearTimeout(logoutTimerUser);
   logoutTimerUser = setTimeout(() => {
@@ -506,10 +509,11 @@ function resetTimer() {
   }, INACTIVITY_LIMIT);
 }
 
+
 function logoutUser() {
   fetch('/api/auth/logout', {
     method: 'POST',
-    credentials: 'include' // important for sending cookies
+    credentials: 'include' 
   })
   .then(response => {
     if (!response.ok) {
@@ -518,18 +522,18 @@ function logoutUser() {
     return response.json();
   })
   .then(data => {
-    console.log(data.message); // "Logout successful"
-    // Optional: redirect to login or home page
+    console.log(data.message); 
+
     window.location.href = '/';
   })
   .catch(error => {
     console.error('Error during logout:', error);
   });
-  // Logout logic reset for next session
   isAutoLogout = false;
 }
-// Buttons for users logout
-  const logoutBtn = document.getElementById('user-logout');
+
+
+const logoutBtn = document.getElementById('user-logout');
   const userLogoutBtn = document.getElementById('user-logout-result');
 
   if (logoutBtn) {
@@ -540,41 +544,28 @@ function logoutUser() {
   }
 
 
-// Track user activity
-window.onload = resetTimer;
-document.onmousemove = resetTimer;
-document.onkeydown = resetTimer;
-document.onclick = resetTimer;
-document.onscroll = resetTimer;
-
 document.getElementById('retry-btn').addEventListener('click', function() {
-  // Reset quiz state
   currentQuestionIndex = 0;
   userAnswers = [];
   shuffleQuestions();
   fetchQuestion();
 
-  // Show quiz page
   const quizPage = document.getElementById('quiz-page');
   quizPage.classList.add('active');
 
-  // Hide result page and its children
   const resultPage = document.getElementById('result-page');
   if (resultPage) resultPage.style.display = 'none';
 
-  // Hide any result-specific buttons explicitly
   const retryBtn = document.getElementById('retry-btn');
   if (retryBtn) retryBtn.style.display = 'none';
   const logoutBtn = document.getElementById('user-logout-result');
   if (logoutBtn) logoutBtn.style.display = 'none';
 
-  // Optional: reset result page header
   const resultHeader = resultPage.querySelector('h2');
   if (resultHeader) resultHeader.style.display = 'none';
 });
 
 
-//for mobile scroll for all portrait content to show and landscape all content to show
   function setViewportHeight() {
     const veiwHeight = window.innerHeight * 0.01;
     document.documentElement.style.setProperty('--vh', `${veiwHeight}px`);
@@ -588,111 +579,5 @@ window.onload = function() {
     document.getElementById('signin-username').focus();
 };
 
-// window.addEventListener('DOMContentLoaded', () => {
-//   document.getElementById('guestBtn').addEventListener('click', async () => {
-//     try {
-//       const res = await fetch('/api/quiz/public');
-//       if (!res.ok) throw new Error('Failed to load public quizzes');
-  
-//       const data = await res.json();
-//       guestQuizData = data.questions; 
-//       currentQuestionIndex = 0;
-//       userAnswers = [];
-  
-//       if (guestQuizData.length === 0) {
-//         alert('No public quizzes available.');
-//         return;
-//       }
-  
-//       // Use the same render function
-//       fetchGuestQuestion();
-  
-//     } catch (err) {
-//       console.error('Guest access error:', err);
-//       alert('Something went wrong. Check console.');
-//     }
-//   });
-  
-// });
 
-
-// function fetchGuestQuestion() {
-//   const questionContainer = document.getElementById('question-container');
-//   const questionData = guestQuizData[currentQuestionIndex];
-
-//   // Clear previous
-//   questionContainer.textContent = '';
-
-//   if (!questionData) {
-//     questionContainer.textContent = 'No questions available.';
-//     return;
-//   }
-
-//   const fieldset = document.createElement('fieldset');
-//   fieldset.className = 'quiz-class';
-
-//   const legend = document.createElement('legend');
-//   legend.className = 'quiz-question';
-//   legend.textContent = questionData.question;
-//   fieldset.appendChild(legend);
-
-//   const optionsWrapper = document.createElement('div');
-//   optionsWrapper.className = 'quiz-radio-text';
-
-//   questionData.options.forEach((option, idx) => {
-//     const optionWrapper = document.createElement('div');
-//     optionWrapper.className = 'option-wrapper';
-
-//     const input = document.createElement('input');
-//     input.type = 'radio';
-//     input.name = 'answer';
-//     input.id = `option-${idx}`;
-//     input.value = option;
-
-//     const label = document.createElement('label');
-//     label.htmlFor = input.id;
-//     label.textContent = option;
-
-//     optionWrapper.appendChild(input);
-//     optionWrapper.appendChild(label);
-//     optionsWrapper.appendChild(optionWrapper);
-//   });
-
-//   fieldset.appendChild(optionsWrapper);
-//   questionContainer.appendChild(fieldset);
-
-//   const nextBtn = document.getElementById('next-btn');
-//   const submitBtn = document.getElementById('submit-btn');
-
-//   nextBtn.disabled = true;
-//   submitBtn.disabled = true;
-
-//   if (currentQuestionIndex === guestQuizData.length - 1) {
-//     nextBtn.style.display = 'none';
-//     submitBtn.style.display = 'inline-block';
-//   } else {
-//     nextBtn.style.display = 'inline-block';
-//     submitBtn.style.display = 'none';
-//   }
-
-//   // Restore saved answer
-//   const savedAnswer = userAnswers[currentQuestionIndex];
-//   if (savedAnswer) {
-//     const radio = document.querySelector(`input[value="${savedAnswer}"]`);
-//     if (radio) radio.checked = true;
-//     nextBtn.disabled = false;
-//     submitBtn.disabled = false;
-//   }
-
-//   document.querySelectorAll('input[name="answer"]').forEach(radio => {
-//     radio.addEventListener('change', () => {
-//       userAnswers[currentQuestionIndex] = radio.value;
-//       if (currentQuestionIndex === guestQuizData.length - 1) {
-//         submitBtn.disabled = false;
-//       } else {
-//         nextBtn.disabled = false;
-//       }
-//     });
-//   });
-// }
 
