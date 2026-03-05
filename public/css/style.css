@@ -113,7 +113,7 @@ a {
 
 button {
   width: fit-content;
-  padding: 1rem 7rem;
+  padding: 1rem 5rem;
   justify-self: center;
   margin-top: 1rem;
   font-size: 1.2rem;
@@ -161,8 +161,9 @@ input {
   font-weight: bold;
   color: rgb(226, 226, 19);
 }
-.quiz-class .quiz-question {
-  text-align: center;
+
+.quiz-radio-text {
+  padding-right: 1rem;
 }
 
 .resultPage {

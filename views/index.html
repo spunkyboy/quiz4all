@@ -24,7 +24,8 @@
               <input type="password" id="signin-password" placeholder="Password" aria-describedby="signin-password" required>
               <input type="checkbox" id="signIn-password-if"> 
               <label for="signIn-password-if">Show Password </label>
-              <!-- <button id="guestBtn">Continue as Guest</button> -->
+              <!--Guest login-->
+              <button type="button" id="guestBtn"> Guest</button>
               <p>
                 <a href="/forgot-password">Forgot Password?</a>
               </p>
@@ -85,7 +86,7 @@
     </div>
   </section>
   <section>
-  <!-- Username Modal -->
+  <!-- Username Modal to save result -->
   <div id="username-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="username-title">
     <div class="modal-content">
       <h3 id="username-title">Passed Save your result</h3>
@@ -104,7 +105,7 @@
     </div>
   </div>  
   </section>
-  <!--too many attempt, wrong password or emaol modal-->
+  <!--Too many attempt, wrong password or emaol modal-->
   <section>
     <div id="signin-error-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="error-title">
       <div class="modal-content">
@@ -116,7 +117,7 @@
       </div>
     </div>    
   </section>
-  <!--modal for quiz error fetch data-->
+  <!--Modal for quiz error fetch data-->
   <div>
     <div id="quiz-error-modal" class="modal hidden">
       <div class="modal-content">

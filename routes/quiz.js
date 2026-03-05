@@ -4,6 +4,7 @@ const Result = require('../models/Result')
 const User = require('../models/User');
 const crypto = require("crypto");
 const authenToken = require('../middleware/authenToken');
+const optionalAuth = require('../middleware/guestAuth');
 const router = express.Router();
 
 // Get random questions with nonce
@@ -27,15 +28,15 @@ router.get('/', authenToken, async (req, res) => {
   }
 });
 
-router.post('/submit', authenToken, async (req, res) => {
+
+router.post('/submit', async (req, res) => {
   const { answers, timeTaken, username } = req.body;
 
-  if (!req.user?.userId) {
-    return res.status(400).json({ message: 'UserId missing' });
+  if (!answers || !Array.isArray(answers) || answers.length === 0) {
+    return res.status(400).json({ message: 'Answers are required' });
   }
 
   try {
-
     const questionIds = answers.map(a => a.id);
     const questions = await Question.find({ _id: { $in: questionIds } });
     let score = 0;
@@ -49,8 +50,8 @@ router.post('/submit', authenToken, async (req, res) => {
     const isPassed = score >= 6;
 
     const newResult = new Result({
-      userId: req.user.userId,           
-      username: username || 'Anonymous',
+      userId: req.user?.userId || null, 
+      username: username || 'Guest',    
       score,
       total: totalQuestions,
       timeSpent: timeTaken,
@@ -93,34 +94,16 @@ router.get('/users', authenToken, async (req, res) => {
 });
 
 
-router.post('/results', authenToken, async (req, res) => {
-  const { username } = req.body;
-
-  if (!username) {
-    return res.status(400).json({ message: 'Username required' });
-  }
-
-  if (!req.user?.userId) {
-    return res.status(400).json({ message: 'UserId missing' });
-  }
-
+router.get('/guest', optionalAuth, async (req, res) => {
   try {
-    const updatedResult = await Result.findOneAndUpdate(
-      { userId: req.user.userId }, 
-      { username },                
-      { sort: { date: -1 }, new: true } 
-    );
-
-    if (!updatedResult) {
-      return res.status(404).json({ message: 'No quiz result found to update' });
-    }
-
-    res.json({ success: true, result: updatedResult });
+    const questions = await Question.find({}, '-correctAnswer'); // hide answers
+    res.json({ success: true, data: questions, user: req.user });
   } catch (err) {
-    console.error('Error saving username:', err);
-    res.status(500).json({ message: 'Error saving username', error: err.message });
+    console.error('Failed to fetch quizzes:', err);
+    res.status(500).json({ message: 'Failed to fetch quizzes' });
   }
 });
+
 
 
 module.exports =  router;

@@ -1,10 +1,9 @@
 // question.test.js
 const request = require('supertest');
 const app = require('./app');
-const Question = require('./models/Question'); // adjust the path if needednpm e
+const Question = require('./models/Question'); 
 let adminToken;
 
-// Helper: create an admin and get token
 beforeAll(async () => {
   const email = `admin${Date.now()}@example.com`;
   const password = 'AdminPass123!';
@@ -18,15 +17,19 @@ beforeAll(async () => {
 
   // Signin admin to get token
   const responSignin = await request(app).post('/api/auth/office/signin').send({ email, password });
-  // console.log('SIGNIN RESPONSE:', res.body); // 👈 ADD THIS
+  // console.log('SIGNIN RESPONSE:', res.body); //
   adminToken =  responSignin.body.token;
-// Added a sample question
+
   await Question.create({
     question: 'What is the capital of France?',
     options: ['Paris', 'London', 'Berlin', 'Rome'],
     answer: 'Paris'
   });
-  // console.log('ADMIN TOKEN:', adminToken); // 👈 AND THIS
+  // console.log('ADMIN TOKEN:', adminToken); 
+});
+
+beforeEach(async () => {
+  await Question.deleteMany({});
 });
 
 describe('Question API', () => {

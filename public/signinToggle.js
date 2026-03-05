@@ -1,4 +1,3 @@
-
 // Toggle show/hide password for sign-In
 document.getElementById('show-password').addEventListener('change', function() {
 const passwordField = document.getElementById('password');

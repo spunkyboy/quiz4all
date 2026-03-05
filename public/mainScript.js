@@ -42,7 +42,7 @@ const closeQuizErrorBtn = document.getElementById('close-quiz-error-btn');
 closeQuizErrorBtn.addEventListener('click', () => {
   quizErrorModal.classList.add('hidden'); // hide modal
 });
-
+//-----------------------
 // Fetch quiz data
 async function fetchQuizDataAndStart() {
   try {
@@ -76,7 +76,9 @@ async function fetchQuizDataAndStart() {
     console.error(err);
   }
 }
-// Fetch question
+
+ 
+//---------------------------------
 function fetchQuestion() {
   const progress = document.getElementById('quiz-progress');
   progress.textContent = `Question ${currentQuestionIndex + 1} of ${quizData.length}`;
@@ -99,7 +101,6 @@ function fetchQuestion() {
     return;
   }
 
-  // BUILD QUIZ UI 
   const fieldset = document.createElement('fieldset');
   fieldset.className = 'quiz-class';
 
@@ -107,6 +108,7 @@ function fetchQuestion() {
   legend.className = 'quiz-question';
   legend.textContent = questionData.question;
   fieldset.appendChild(legend);
+  legend.style.textAlign = 'center';
 
   const optionsWrapper = document.createElement('div');
   optionsWrapper.className = 'quiz-radio-text';
@@ -127,6 +129,7 @@ function fetchQuestion() {
     label.className = 'option-label';
     label.htmlFor = input.id;
     label.textContent = option;
+    label.style.marginLeft = '10px'; 
 
     optionWrapper.appendChild(input);
     optionWrapper.appendChild(label);
@@ -152,7 +155,6 @@ function fetchQuestion() {
     submitBtn.style.display = 'none';
   }
 
-  
   const savedAnswer = userAnswers[currentQuestionIndex];
   if (savedAnswer) {
     const radio = document.querySelector(`input[value="${savedAnswer}"]`);
@@ -178,7 +180,7 @@ function fetchQuestion() {
   }
 }
 
-
+//-------------------------------
 async function requestUsername() {
   return new Promise(resolve => {
     const modal = document.getElementById('username-modal');
@@ -200,8 +202,16 @@ async function requestUsername() {
 
     saveBtn.onclick = () => {
       const value = input.value.trim();
+
+      if (!value) {
+        input.style.border = '2px solid red';
+        input.placeholder = 'Please enter a username';
+        input.focus();
+        return;
+      }
+
       cleanup();
-      resolve(value || null);
+      resolve(value);
     };
 
     cancelBtn.onclick = () => {
@@ -210,8 +220,26 @@ async function requestUsername() {
     };
   });
 }
+//---------------------------
+// Grab the button
+document.getElementById('guestBtn').addEventListener('click', () => {
+  window.isGuest = true;
+  document.getElementById('signin-heading').classList.remove('active');
+  document.getElementById('quiz-page').classList.add('active');
 
+  fetch('/api/quiz/guest')
+    .then(res => res.json())
+    .then(data => {
+      quizData = data.data;
+      showQuizPage();
+    })
+    .catch(err => {
+      console.error('Failed to load quiz:', err);
+      alert('Could not start quiz.');
+    });
+});
 
+//-----------------------
 async function showResultPage() {
   const endTime = Date.now();
   const timeSpentMs = endTime - startTime;
@@ -226,6 +254,7 @@ async function showResultPage() {
   }));
 
   let resultData;
+
   try {
     const res = await fetch('/api/quiz/submit', {
       method: 'POST',
@@ -264,7 +293,7 @@ async function showResultPage() {
     trustedHTML = DOMPurify.sanitize(resultMessage);
   }
 
-  resultElement.textContent = trustedHTML;
+  resultElement.innerHTML = trustedHTML;
 
   resultElement.style.color = isPassed ? '#28a745' : '#ff6347';
   resultElement.style.fontSize = '1.5rem';
@@ -281,26 +310,29 @@ async function showResultPage() {
   const username = await requestUsername();
   if (!username) return;
 
-  try {
-    await fetch('/api/quiz/results', {
-      method: 'POST',
-      credentials: 'include',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, score, total, timeSpent: formattedTime, isPassed })
-    });
-  } catch (err) {
-    console.error('Failed to save username', err);
+  if (isPassed) {
+    try {
+      await fetch('/api/quiz/results/guest/user', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, score, total, timeSpent: formattedTime, isPassed })
+      });
+    } catch (err) {
+      console.error('Failed to save username', err);
+    }
   }
 }
 document.getElementById('submit-btn').addEventListener('click', showResultPage);
 
+//-----------------
 function shuffleQuestions() {
     for (let i = quizData.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [quizData[i], quizData[j]] = [quizData[j], quizData[i]];
     }
 }
-
+//------------------
 const errorModal = document.getElementById('signin-error-modal');
 const errorMessage = document.getElementById('error-message');
 const closeErrorBtn = document.getElementById('close-error-btn');
@@ -358,7 +390,7 @@ document.getElementById('signin-form').addEventListener('submit', async function
   }
 });
 
-
+//----------------
 async function loadUser() {
   try {
     const res = await fetch('/api/quiz/users', {
@@ -388,6 +420,7 @@ async function loadUser() {
   }
 }
 
+//-----------------
 document.getElementById('signup-form').addEventListener('submit', async function (event) {
   event.preventDefault();
 
@@ -438,7 +471,7 @@ document.getElementById('signup-form').addEventListener('submit', async function
   }
 });
 
-
+//-------------------
 // Toggle show/hide password for sign-up
 document.getElementById('password-if').addEventListener('change', function() {
     const passwordField = document.getElementById('signup-password');
@@ -459,7 +492,7 @@ document.getElementById('signIn-password-if').addEventListener('change', functio
     }
 });
 
-//prev and next btns
+//Prev and next btns
 document.getElementById('next-btn').addEventListener('click', function() {
     const selectedOption = document.querySelector('input[name="answer"]:checked');
     if (selectedOption) {
@@ -474,14 +507,15 @@ document.getElementById('next-btn').addEventListener('click', function() {
     document.getElementById('prev-btn').disabled = false;
 });
 
+//---------------------
 document.getElementById('prev-btn').addEventListener('click', function () {
     currentQuestionIndex--;
     if (currentQuestionIndex <= 0) {
         currentQuestionIndex = 0;
-        this.disabled = true; // Disable Previous on first question
+        this.disabled = true; 
     }
 
-    fetchQuestion(); // Re-load the updated question
+    fetchQuestion();
 
     // Always enable Next if not on last
     if (currentQuestionIndex < quizData.length - 1) {
@@ -489,6 +523,7 @@ document.getElementById('prev-btn').addEventListener('click', function () {
     }
 });
 
+//-------------------
 // Track user activity
 window.onload = resetTimer;
 document.onmousemove = resetTimer;
@@ -509,7 +544,7 @@ function resetTimer() {
   }, INACTIVITY_LIMIT);
 }
 
-
+//--------------------
 function logoutUser() {
   fetch('/api/auth/logout', {
     method: 'POST',
@@ -532,7 +567,6 @@ function logoutUser() {
   isAutoLogout = false;
 }
 
-
 const logoutBtn = document.getElementById('user-logout');
   const userLogoutBtn = document.getElementById('user-logout-result');
 
@@ -543,7 +577,7 @@ const logoutBtn = document.getElementById('user-logout');
     userLogoutBtn.addEventListener('click', logoutUser);
   }
 
-
+//--------------------------
 document.getElementById('retry-btn').addEventListener('click', function() {
   currentQuestionIndex = 0;
   userAnswers = [];
@@ -565,7 +599,7 @@ document.getElementById('retry-btn').addEventListener('click', function() {
   if (resultHeader) resultHeader.style.display = 'none';
 });
 
-
+//--------------------------
   function setViewportHeight() {
     const veiwHeight = window.innerHeight * 0.01;
     document.documentElement.style.setProperty('--vh', `${veiwHeight}px`);
@@ -578,6 +612,5 @@ window.onload = function() {
     showSignIn();
     document.getElementById('signin-username').focus();
 };
-
 
 

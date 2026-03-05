@@ -121,7 +121,7 @@ a {
 
 button {
   width: fit-content;
-  padding: 1rem 7rem;
+  padding: 1rem 5rem;
   justify-self: center;
   margin-top: 1rem;
   font-size: 1.2rem;
@@ -171,14 +171,16 @@ input {
   font-weight: bold;
   color: rgb(226, 226, 19);
   } 
-  .quiz-question {
-    text-align: center;
-  }
+
+}
+.quiz-radio-text{
+  padding-right: 1rem;
 }
 // Result text-align center
 .resultPage {
   text-align: center;
 }
+
 // For users
 .sign-in, .sign-up-form {
   display: grid;
@@ -196,6 +198,7 @@ input {
     margin: 1.2rem 0rem;
     color:#e0ffff;
   }
+ 
 }
 // Admin page style for mobile 
 .admin-content {
@@ -772,12 +775,7 @@ h1 {
 }
 
 @media screen and (max-width: 768px) and (orientation: portrait)  {
- 
   .page.active {
-        // width: 100vw;
-        // max-width: none;
-        // margin-left: calc(-50vw + 50%);
-        // padding: 1rem;
        
     .greetings{
       font-family: "Noto Sans", serif;
