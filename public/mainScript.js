@@ -222,21 +222,37 @@ async function requestUsername() {
 }
 //---------------------------
 // Grab the button
-document.getElementById('guestBtn').addEventListener('click', () => {
+document.getElementById('guestBtn').addEventListener('click', async () => {
   window.isGuest = true;
   document.getElementById('signin-heading').classList.remove('active');
   document.getElementById('quiz-page').classList.add('active');
 
-  fetch('/api/quiz/guest')
-    .then(res => res.json())
-    .then(data => {
-      quizData = data.data;
-      showQuizPage();
-    })
-    .catch(err => {
-      console.error('Failed to load quiz:', err);
-      alert('Could not start quiz.');
-    });
+  const loadingEntry = document.createElement('div');
+  loadingEntry.id = 'loading-spinner';
+
+  const spinner = document.createElement('div');
+  spinner.className = 'spinner-roll'; 
+
+  const text = document.createElement('p');
+  text.textContent = 'Loading your quiz...';
+
+  loadingEntry.appendChild(spinner);
+  loadingEntry.appendChild(text);
+  document.body.appendChild(loadingEntry);
+
+  try {
+    const res = await fetch('/api/quiz/guest');
+    if (!res.ok) throw new Error('Failed to fetch quiz data');
+
+    const data = await res.json();
+    quizData = data.data;
+    showQuizPage();
+  } catch (err) {
+    console.error('Failed to load quiz:', err);
+    alert('Could not start quiz.');
+  } finally {
+    loadingEntry.remove();
+  }
 });
 
 //-----------------------
