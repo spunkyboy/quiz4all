@@ -57,51 +57,49 @@ Score
 Pass / Fail status
 
 ## Tech Stack
-Frontend
+**Frontend:**
 
-HTML5
+- HTML5
 
-JavaScript
+- JavaScript
 
-SASS
+- Sass
 
-Responsive UI
+- Responsive UI
 
-Backend
+**Backend:**
 
-Node.js
+- Node.js
 
-Express.js
+- Express.js
 
-Database
+**Database:**
 
-MongoDB
+- MongoDB
 
-Libraries & Tools
+## Libraries & Tools
 
-## *Development Tools:*
+# *Development Tools:*
 
-Git
+- Git
 
-GitHub
+- GitHub
 
-Visual Studio Code
+- Visual Studio Code
 
-Libraries Used:
+## Libraries Used:
 
-validator
+- validator
 
-sweetalert
+- sweetalert
 
-mailgun
+- mailgun
 
-Testing & Code Quality:
+## Testing & Code Quality:
 
-ESLint
+- ESLint
 
-Jest
-
-Authentication
+- Jest
 
 **The application includes two authentication systems:**
 
