@@ -79,7 +79,7 @@ User Features:
 
 ## Libraries & Tools
 
-## *Development Tools:*
+### Development Tools:
 
 - Git
 
@@ -87,7 +87,7 @@ User Features:
 
 - Visual Studio Code
 
-## Libraries Used:
+###  Libraries Used:
 
 - validator
 
@@ -95,7 +95,7 @@ User Features:
 
 - mailgun
 
-## Testing & Code Quality:
+###  Testing & Code Quality:
 
 - ESLint
 
