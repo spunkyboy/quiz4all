@@ -44,8 +44,6 @@ User Features:
 
 - View user quiz results
 
-  ![Alt Text](images/adminInterface.jpg)
-
 **Each user result includes:**
 
 - Username
@@ -177,3 +175,9 @@ Quiz results are stored in MongoDB and include:
 - Improve UI design
 
 - Increase test coverage using Jest
+
+![Alt Text](images/adminInterface.jpg)
+![Alt Text](images/adminFeatures.PNG)
+![Alt Text](images/quizPotrait.jpg)
+![Alt Text](images/resultPage.jpg)
+![Alt Text](images/saveResult.jpg)
