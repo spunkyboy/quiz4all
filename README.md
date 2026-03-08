@@ -150,22 +150,3 @@ Quiz results are stored in MongoDB and include:
    
   - Pass / Fail status
 
-Tools Used:
-
-Version Control:
-
-   - Git
-    
-   - GitHub
-
-Development Environment:
-    
-   - Visual Studio Code
-
-Testing:
-
-  - Jest
-
-- Code Quality:
-
-  - ESLint
