@@ -59,11 +59,11 @@ Pass / Fail status
 ## Tech Stack
 Frontend
 
-React
+HTML5
 
 JavaScript
 
-CSS
+SASS
 
 Responsive UI
 
@@ -163,9 +163,9 @@ Development Environment:
 
 Visual Studio Code
 
-Testing:
+- Testing:
 
-Jest
+- Jest
 
 Code Quality:
 
