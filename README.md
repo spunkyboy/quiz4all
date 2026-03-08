@@ -180,3 +180,5 @@ Quiz results are stored in MongoDB and include:
 ![Alt Text](images/quizPotrait.jpg)
 ![Alt Text](images/resultPage.jpg)
 ![Alt Text](images/saveResult.jpg)
+![Alt Text](images/landscape.jpg)
+![Alt Text](images/landscapeTwo.jpg)
