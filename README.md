@@ -150,3 +150,26 @@ Quiz results are stored in MongoDB and include:
    
   - Pass / Fail status
 
+### Deployment:
+
+- MongoDB Atlas → database
+
+- Node.js backend → deployed to Render 
+
+- Frontend → deployed to Github
+
+- Frontend fetches data from backend API
+
+### Future Improvements
+
+- Create a full admin dashboard UI
+
+- Add quiz categories
+
+- Add a leaderboard system
+
+- Multiples questions
+
+- Improve UI design
+
+- Increase test coverage using Jest
