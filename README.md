@@ -79,7 +79,7 @@ MongoDB
 
 Libraries & Tools
 
-Development Tools:
+**Development Tools:**
 
 Git
 
@@ -103,43 +103,44 @@ Jest
 
 Authentication
 
-The application includes two authentication systems:
+**The application includes two authentication systems:**
 
-User Authentication
+- User Authentication
 
-Sign up
+- Sign up
 
-Sign in
+- Sign in
 
-Guest access for quiz attempts
+- Password Reset 
 
-Admin Authentication
+- Guest access for quiz attempts
 
-Admin sign up
+- Admin Authentication
 
-Admin sign in
+- Admin sign up
 
-Access to admin dashboard for managing quizzes
+- Admin sign in
 
-Quiz System
+- Access to admin dashboard for managing quizzes
+
 
 The quiz system includes:
 
-Maximum of 10 questions per quiz
+- Maximum of 10 questions per quiz
 
-Next / Previous navigation
+- Next / Previous navigation
 
-Answer selection and editing
+- Answer selection and editing
 
-Automatic score calculation
+- Automatic score calculation
 
-Pass / Fail evaluation
+- Pass / Fail evaluation
 
-Option to save results
+- Option to save results
 
-Result Storage
+- Result Storage
 
-- Quiz results are stored in MongoDB and include:
+Quiz results are stored in MongoDB and include:
 
   - Username
    
@@ -153,17 +154,17 @@ Result Storage
 
 Tools Used:
 
-- Version Control:
+Version Control:
 
    - Git
     
    - GitHub
 
-- Development Environment:
+Development Environment:
     
    - Visual Studio Code
 
-- Testing:
+Testing:
 
   - Jest
 
