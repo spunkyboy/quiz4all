@@ -177,7 +177,6 @@ Quiz results are stored in MongoDB and include:
 - Increase test coverage using Jest
 
 ![Alt Text](images/adminInterface.jpg)
-![Alt Text](images/adminFeatures.PNG)
 ![Alt Text](images/quizPotrait.jpg)
 ![Alt Text](images/resultPage.jpg)
 ![Alt Text](images/saveResult.jpg)
