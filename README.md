@@ -151,21 +151,21 @@ Score
 
 Pass / Fail status
 
-Tools Used
+Tools Used:
 
-Version Control:
+- Version Control:
 
-Git
+   - Git
+    
+   - GitHub
 
-GitHub
-
-Development Environment:
-
-Visual Studio Code
+- Development Environment:
+    
+   - Visual Studio Code
 
 - Testing:
 
-- Jest
+  - Jest
 
 Code Quality:
 
