@@ -139,17 +139,17 @@ Option to save results
 
 Result Storage
 
-Quiz results are stored in MongoDB and include:
+- Quiz results are stored in MongoDB and include:
 
-Username
-
-Date
-
-Time
-
-Score
-
-Pass / Fail status
+  - Username
+   
+  - Date
+   
+  - Time
+   
+  - Score
+   
+  - Pass / Fail status
 
 Tools Used:
 
@@ -167,6 +167,6 @@ Tools Used:
 
   - Jest
 
-Code Quality:
+- Code Quality:
 
-ESLint
+  - ESLint
