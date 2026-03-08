@@ -1,4 +1,4 @@
-*Quiz Application*
+# Quiz Application
 
 A full-stack quiz application where users can take quizzes and administrators can manage quiz questions and view user results.
 The system supports user authentication, result tracking, and quiz management through an admin panel.
