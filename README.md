@@ -6,55 +6,55 @@ The system supports user authentication, result tracking, and quiz management th
 This project was built as part of my software developer portfolio.
 
 ## Features
-User Features
+User Features:
 
-Take a quiz with 10 questions per attempt
+- Take a quiz with 10 questions per attempt
 
-Navigate questions using Next and Previous buttons
+- Navigate questions using Next and Previous buttons
 
-Change answers before submitting
+- Change answers before submitting
 
-View final quiz results
+**View final quiz results:**
 
-If the user passes, they can save their result
+- If the user passes, they can save their result
 
-If the user fails, they can retry the quiz
+- If the user fails, they can retry the quiz
 
-Option to take quiz as a guest user
+- Option to take quiz as a guest user
 
-Option to sign up / sign in for a personal account
+- Option to sign up / sign in for a personal account
 
-Responsive interface for different screen sizes
+- Responsive interface for different screen sizes
 
-Admin Features
+**Admin Features:**
 
-Administrators have their own authentication system.
+- Administrators have their own authentication system.
 
-Admin capabilities include:
+*Admin capabilities include:*
 
-Admin Sign Up
+- Admin Sign Up
 
-Admin Sign In
+- Admin Sign In
 
-Add quiz questions
+- Add quiz questions
 
-Delete quiz questions
+- Delete quiz questions
 
-Manage quiz question limit (10 questions per quiz)
+- Manage quiz question limit (10 questions per quiz)
 
-View user quiz results
+- View user quiz results
 
-Each user result includes:
+**Each user result includes:**
 
-Username
+- Username
 
-Date
+- Date
 
-Time
+- Time
 
-Score
+- Score
 
-Pass / Fail status
+- Pass / Fail status
 
 ## Tech Stack
 **Frontend:**
@@ -79,7 +79,7 @@ Pass / Fail status
 
 ## Libraries & Tools
 
-# *Development Tools:*
+## *Development Tools:*
 
 - Git
 
@@ -101,7 +101,7 @@ Pass / Fail status
 
 - Jest
 
-**The application includes two authentication systems:**
+## **The application includes two authentication systems:**
 
 - User Authentication
 
