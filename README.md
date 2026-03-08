@@ -101,6 +101,8 @@ User Features:
 
 - Jest
 
+- W3C Validator
+
 ## **The application includes two authentication systems:**
 
 - User Authentication
