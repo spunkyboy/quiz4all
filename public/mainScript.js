@@ -227,11 +227,12 @@ document.getElementById('guestBtn').addEventListener('click', async () => {
   document.getElementById('signin-heading').classList.remove('active');
   document.getElementById('quiz-page').classList.add('active');
 
+  // ✅ Create loading spinner dynamically
   const loadingEntry = document.createElement('div');
   loadingEntry.id = 'loading-spinner';
 
   const spinner = document.createElement('div');
-  spinner.className = 'spinner-roll'; 
+  spinner.className = 'spinner-roll'; // CSS animation class
 
   const text = document.createElement('p');
   text.textContent = 'Loading your quiz...';
@@ -249,7 +250,19 @@ document.getElementById('guestBtn').addEventListener('click', async () => {
     showQuizPage();
   } catch (err) {
     console.error('Failed to load quiz:', err);
-    alert('Could not start quiz.');
+
+    const errorModal = document.getElementById('signin-error-modal');
+    const errorMessage = document.getElementById('error-message');
+    const closeErrorBtn = document.getElementById('close-error-btn');
+
+    if (errorModal && errorMessage && closeErrorBtn) {
+      errorMessage.innerHTML = 'Could not start quiz. Please try again.';
+      errorModal.classList.remove('hidden');
+
+      closeErrorBtn.onclick = () => {
+        errorModal.classList.add('hidden');
+      };
+    }
   } finally {
     loadingEntry.remove();
   }
