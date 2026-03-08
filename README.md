@@ -5,7 +5,7 @@ The system supports user authentication, result tracking, and quiz management th
 
 This project was built as part of my software developer portfolio.
 
-Features
+## Features
 User Features
 
 Take a quiz with 10 questions per attempt
@@ -56,7 +56,7 @@ Score
 
 Pass / Fail status
 
-Tech Stack
+## Tech Stack
 Frontend
 
 React
