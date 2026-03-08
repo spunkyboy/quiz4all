@@ -44,6 +44,8 @@ User Features:
 
 - View user quiz results
 
+  ![Alt Text](images/adminInterface.jpg)
+
 **Each user result includes:**
 
 - Username
