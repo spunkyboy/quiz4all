@@ -3,7 +3,7 @@ const formData = require("form-data");
 
 const sendEmailReq = async ({ to, subject, html }) => {
 
-  // ✅ ADD CHECK HERE
+  // ADD CHECK HERE
   if (process.env.NODE_ENV === 'test' || !process.env.MAILGUN_API_KEY) {
     console.log('🧪 Skipping email (no API key or test mode)');
     return;

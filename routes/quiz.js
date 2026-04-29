@@ -1,12 +1,9 @@
 const express = require('express');
 const Question = require('../models/Question');
 const Result = require('../models/Result')
-const User = require('../models/User');
 const crypto = require("crypto");
 const authenToken = require('../middleware/authenToken');
-const optionalAuth = require('../middleware/guestAuth');
 const router = express.Router();
-
 // Get random questions with nonce
 router.get('/', authenToken, async (req, res) => {
   try {
@@ -74,35 +71,6 @@ router.post('/submit', async (req, res) => {
 });
 
 
-router.get('/users', authenToken, async (req, res) => {
-  try {
-    
-    const user = await User.findById(req.user.userId);
-
-    if (!user) return res.status(404).json({ message: 'User not found' });
-      if (req.user.role !== 'user' && req.user.role !== 'admin') {
-        return res.status(403).json({ message: 'Forbidden: role not allowed' });
-      }
-
-    res.json({
-       email: user.email,
-       role: req.user.role
-      });
-  } catch {
-    res.status(500).json({ message: 'Server error' });
-  }
-});
-
-
-router.get('/guest', optionalAuth, async (req, res) => {
-  try {
-    const questions = await Question.find({}, '-correctAnswer'); // hide answers
-    res.json({ success: true, data: questions, user: req.user });
-  } catch (err) {
-    console.error('Failed to fetch quizzes:', err);
-    res.status(500).json({ message: 'Failed to fetch quizzes' });
-  }
-});
 
 
 

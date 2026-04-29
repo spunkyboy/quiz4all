@@ -230,8 +230,8 @@ router.post('/signup', async (req, res) => {
 
 
 // User Signin
-router.post('/signin', ...signinMiddleWares, async (req, res) => {
-
+router.post('/signin', ...signinMiddleWares,  async (req, res) => {
+console.log('sigin in route reached');
   const { email, password } = req.body;
 
   if (!email || !password) {
@@ -404,6 +404,20 @@ router.post("/reset-password/:token", async (req, res) => {
     return res.status(500).json({ message: "Server error" });
   }
 });
+
+
+// router.get('/csrf-token', (req, res) => {
+//   try {
+//     if (!req.session) {
+//       return res.status(500).json({ message: 'Session not initialized' });
+//     }
+
+//     res.json({ csrfToken: req.session.csrfToken });
+//   } catch (err) {
+//     console.error('CSRF route error:', err);
+//     res.status(500).json({ message: 'Server error' });
+//   }
+// });
 
 
 

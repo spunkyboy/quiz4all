@@ -1,5 +1,7 @@
 // app.js
 const express = require('express');
+const session = require('express-session');
+const { MongoStore } = require('connect-mongo');
 const cookieParser = require('cookie-parser');
 const path = require('path');
 const helmet = require('helmet');
@@ -7,12 +9,13 @@ const crypto = require("crypto");
 const fs = require('fs');
 const cors = require('cors');
 
-
 // Routes
 const authRoutes = require('./routes/auth');
 const quizRoutes = require('./routes/quiz');
 const questionRoutes = require('./routes/questions');
 const resultRoutes = require('./routes/results');
+// const { addCsrfToken } = require('./middleware/csrf');
+
 const app = express();
 
 app.use(cookieParser()); // enable parsing cookies
@@ -31,9 +34,27 @@ const allowedOrigins = process.env.NODE_ENV === 'production'
 
 app.use(cors({
   origin: allowedOrigins,
-  methods: ['GET', 'POST', 'PUT', 'DELETE']
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true
 }));
-//Applied Helmet with CSP
+
+app.set('trust proxy', 1);
+
+app.use(session({
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: false,
+  store: MongoStore.create({
+    mongoUrl: process.env.MONGO_URI
+  }),
+  cookie: {
+    httpOnly: true,
+    sameSite: 'lax',
+    secure: process.env.NODE_ENV = 'production'
+  }
+}));
+
+// CSP
 app.use(
   helmet.contentSecurityPolicy({
     useDefaults: true,
@@ -43,8 +64,6 @@ app.use(
         "'self'",
         "'strict-dynamic'",
         (req, res) => `'nonce-${res.locals.nonce}'`,
-        // Optional fallback for old browsers:
-        "'unsafe-inline'",
         "https://kit.fontawesome.com",
         "https://unpkg.com" ,
         "https://cdn.jsdelivr.net"
@@ -80,31 +99,16 @@ app.use(
   })
 );
 
-// //  STATIC ASSETS (CSS, JS) 
-// const thirtyDays = 30 * 24 * 60 * 60 * 1000; // 30 days in milliseconds
-
-// Serve static assets (CSS, JS)
-// app.use(express.static(path.join(__dirname, 'public'), {
-//   // Production: long cache, dev: no cache
-//   maxAge: process.env.NODE_ENV === 'production' ? thirtyDays : 0,
-//   etag: true,
-//   lastModified: true,
-//   setHeaders: (res, filePath) => {
-//     // Force CSS & JS files to always bypass cache if query string changes
-//     if (filePath.endsWith('.css') || filePath.endsWith('.js')) {
-//       res.setHeader('Cache-Control', 'public, max-age=0');
-//     }
-//   }
-// }));
 app.use(express.static(path.join(__dirname, 'public'), {
-  maxAge: 0,          
-  etag: false,         
-  lastModified: false,
+  maxAge: process.env.NODE_ENV === 'production' ? '30d' : 0,
+  etag: process.env.NODE_ENV === 'production',
+  lastModified: process.env.NODE_ENV === 'production',
   setHeaders: (res) => {
-    // Optional: make absolutely sure browser does not cache
-    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
-    res.setHeader('Pragma', 'no-cache');
-    res.setHeader('Expires', '0');
+    if (process.env.NODE_ENV !== 'production') {
+      res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+      res.setHeader('Pragma', 'no-cache');
+      res.setHeader('Expires', '0');
+    }
   }
 }));
 
@@ -139,27 +143,27 @@ app.get('/reset-password/:token', (req, res) => {
 // Helper function
 function htmlIndexAdminAdminsigninup(res, filePath) {
   const nonce = res.locals?.nonce;
+  // console.log(nonce, 'checking for nonce');
 
   if (!nonce) {
-    console.error("[helper] No nonce found in res.locals!");
+    console.error('[helper] No nonce found in res.locals!');
   }
 
-  // console.log("[helper] Serving HTML file:", filePath);
-  fs.readFile(filePath, "utf8", (err, html) => {
+  fs.readFile(filePath, 'utf8', (err, html) => {
     if (err) {
-      res.status(500).send("Error loading HTML");
-      return;
+      return res.status(500).send('Error loading HTML');
     }
 
-    const modifiedHtml = html
-      // add nonce to ALL script tags (inline + src)
-      .replace(/<script\b([^>]*)>/gi, `<script nonce="${nonce}"$1>`)
-      // add nonce to all style tags
-      // .replace(/<style\b([^>]*)>/gi, `<style nonce="${nonce}"$1>`);
-
+    const modifiedHtml = html.replace(
+      /<script\b(?![^>]*\bnonce=)([^>]*)>/gi,
+      `<script nonce="${nonce}"$1>`
+    );
+    // console.log(modifiedHtml);
     res.send(modifiedHtml);
   });
 }
+
+// app.use(addCsrfToken);
 
 app.use('/api/auth', authRoutes);
 app.use('/api/quiz', quizRoutes);

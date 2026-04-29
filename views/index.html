@@ -7,18 +7,27 @@
       <title>Quiz</title>
     <link rel="stylesheet" href="css/reset.css">
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/darkMode.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap" rel="stylesheet">
+
+<style>
+
+</style>
   </head>
   
 <body class="body-content">
   <main>
    <!-- Sign In Page -->
+   <button id="dark-mode-toggle" class="dark-toggle">
+    🌙 Dark Mode
+  </button>
     <section>
         <div id="signin-heading" class="page active">
           <h1>Quiz</h1>
           <h2>Sign In</h2>
+          
           <form id="signin-form"  aria-describedby="sign-in"  class="sign-in">
               <input type="text" id="signin-username" placeholder="Username" aria-describedby="signin-username" required>
               <input type="password" id="signin-password" placeholder="Password" aria-describedby="signin-password" required>
@@ -37,6 +46,7 @@
               </div>
           </form>
         </div>
+   
     </section>
 <!-- Sign Up Page -->
 <section>
@@ -130,6 +140,9 @@
 
 <!-- Then your script -->
 <script src="https://unpkg.com/dompurify@3.0.6/dist/purify.min.js" defer></script>
+
  <script src="/mainScript.js" defer></script>
+ <script src="/darkMode.js" ></script>
+
 </body>
 </html>

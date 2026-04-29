@@ -1,3 +1,4 @@
+
 let quizData = [];
 let currentQuestionIndex = 0;
 let userAnswers = [];
@@ -227,7 +228,7 @@ document.getElementById('guestBtn').addEventListener('click', async () => {
   document.getElementById('signin-heading').classList.remove('active');
   document.getElementById('quiz-page').classList.add('active');
 
-  // ✅ Create loading spinner dynamically
+  // Create loading spinner dynamically
   const loadingEntry = document.createElement('div');
   loadingEntry.id = 'loading-spinner';
 
@@ -242,7 +243,7 @@ document.getElementById('guestBtn').addEventListener('click', async () => {
   document.body.appendChild(loadingEntry);
 
   try {
-    const res = await fetch('/api/quiz/guest');
+    const res = await fetch('/api/results/guest');
     if (!res.ok) throw new Error('Failed to fetch quiz data');
 
     const data = await res.json();
@@ -285,14 +286,17 @@ async function showResultPage() {
   let resultData;
 
   try {
-    const res = await fetch('/api/quiz/submit', {
+    
+    const response = await fetch('/api/quiz/submit', {
       method: 'POST',
       credentials: 'include',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json'
+      },
       body: JSON.stringify({ answers: answersPayload, timeTaken: formattedTime })
     });
-    if (!res.ok) throw new Error('Quiz submission failed');
-    resultData = await res.json();
+    if (!response.ok) throw new Error('Quiz submission failed');
+    resultData = await response.json();
   } catch (err) {
     console.error(err);
     return alert('Quiz submission failed');
@@ -305,7 +309,7 @@ async function showResultPage() {
   let resultMessage = isPassed
     ? `🎉 Congratulations! You passed with ${score} / ${total}`
     : `❌ You failed: ${score} / ${total}`;
-  resultMessage += ` | Time: ${formattedTime}`;
+  resultMessage += ` . Time: ${formattedTime}`;
 
   // --- DOMPurify + fallback for browsers without Trusted Types ---
   let trustedHTML;
@@ -341,7 +345,7 @@ async function showResultPage() {
 
   if (isPassed) {
     try {
-      await fetch('/api/quiz/results/guest/user', {
+      await fetch('/api/results', {
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
@@ -379,7 +383,7 @@ document.getElementById('signin-form').addEventListener('submit', async function
   try {
     const response = await fetch('/api/auth/signin', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json'},
       credentials: 'include',
       body: JSON.stringify({ email, password })
     });
@@ -422,7 +426,7 @@ document.getElementById('signin-form').addEventListener('submit', async function
 //----------------
 async function loadUser() {
   try {
-    const res = await fetch('/api/quiz/users', {
+    const res = await fetch('/api/results/users', {
       method: 'GET',
       credentials: 'include' 
     });

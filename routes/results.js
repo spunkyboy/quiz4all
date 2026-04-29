@@ -1,6 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const Result = require('../models/Result');
+const optionalAuth = require('../middleware/guestAuth');
+const authenToken = require('../middleware/authenToken');
+const Question = require('../models/Question');
+const User = require('../models/User');
 
 
 function validationsResutl({username, score, total}){
@@ -50,6 +54,38 @@ router.get('/', async (req, res) => {
   } catch {
     console.error('[GET /api/results] Error:');
     res.status(500).json({ success: false, message: 'Internal Server Error' });
+  }
+});
+
+
+
+router.get('/users', authenToken, async (req, res) => {
+  try {
+    
+    const user = await User.findById(req.user.userId);
+
+    if (!user) return res.status(404).json({ message: 'User not found' });
+      if (req.user.role !== 'user' && req.user.role !== 'admin') {
+        return res.status(403).json({ message: 'Forbidden: role not allowed' });
+      }
+
+    res.json({
+       email: user.email,
+       role: req.user.role
+      });
+  } catch {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+
+router.get('/guest', optionalAuth, async (req, res) => {
+  try {
+    const questions = await Question.find({}, '-correctAnswer'); // hide answers
+    res.json({ success: true, data: questions, user: req.user });
+  } catch (err) {
+    console.error('Failed to fetch quizzes:', err);
+    res.status(500).json({ message: 'Failed to fetch quizzes' });
   }
 });
 
