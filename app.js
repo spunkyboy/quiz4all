@@ -1,7 +1,5 @@
 // app.js
 const express = require('express');
-const session = require('express-session');
-const { MongoStore } = require('connect-mongo');
 const cookieParser = require('cookie-parser');
 const path = require('path');
 const helmet = require('helmet');
@@ -38,21 +36,6 @@ app.use(cors({
   credentials: true
 }));
 
-app.set('trust proxy', 1);
-
-app.use(session({
-  secret: process.env.SESSION_SECRET,
-  resave: false,
-  saveUninitialized: false,
-  store: MongoStore.create({
-    mongoUrl: process.env.MONGO_URI
-  }),
-  cookie: {
-    httpOnly: true,
-    sameSite: 'lax',
-    secure: process.env.NODE_ENV = 'production'
-  }
-}));
 
 // CSP
 app.use(
