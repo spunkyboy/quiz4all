@@ -29,10 +29,15 @@ body {
   
   .dark-toggle {
     display: block;
-    margin: 0 auto;
-    
+    margin: 4rem auto;
+
     padding: 10px 14px;
     border-radius: 8px;
     cursor: pointer;
   }
 
+.dark-toggle-wrapper {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
