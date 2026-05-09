@@ -1,8 +1,4 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+
 
 body {
     background: #f5f5f5;
@@ -46,6 +42,8 @@ body {
       
         width: 100%;
         max-width: 10rem;
-        margin: 3rem 0rem;
+        margin-top: 3rem;
+        display: none;
+
     }
   }
